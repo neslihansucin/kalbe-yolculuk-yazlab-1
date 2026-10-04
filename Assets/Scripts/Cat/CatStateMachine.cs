@@ -5,15 +5,7 @@ using System.Collections.Generic;
 
 public class CatStateMachine : MonoBehaviour
 {
-    public enum CatState
-    {
-        FollowingPlayer,
-        CrossingObstacle,
-        Searching,
-        MovingToButton,
-        ActivatingButton,
-        TaskComplete
-    }
+   
 
     public CatState currentState = CatState.FollowingPlayer;
 
@@ -32,13 +24,51 @@ public class CatStateMachine : MonoBehaviour
 
     private bool gapSelected = false;
     private bool reachedGapEntrance = false;
+    private CatSensor sensor;
 
+    private Vector3 detectedButtonPosition;
+    private bool buttonDetected = false;
+
+    private Vector3 explorationTarget;
+    private bool hasExplorationTarget = false;
+
+    private List<Vector3> visitedPoints =
+        new List<Vector3>();
+
+    [SerializeField]
+    private float visitedPointRadius = 1.5f;
+
+    [SerializeField]
+    private float scanInterval = 0.5f;
+
+    private float nextScanTime = 0f;
+
+    [SerializeField]
+    private Collider searchArea;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+
+        NavMeshHit hit;
+
+        if (NavMesh.SamplePosition(
+            transform.position,
+            out hit,
+            2f,
+            NavMesh.AllAreas))
+        {
+            agent.Warp(hit.position);
+        }
+
+        sensor = new CatSensor(
+            transform,
+            10f,
+            4f,
+            36
+        );
+
         currentState = CatState.FollowingPlayer;
     }
-
     void Update()
     {
         if (Keyboard.current != null &&
@@ -178,12 +208,13 @@ public class CatStateMachine : MonoBehaviour
                 );
 
                 bool blocked =
-                    Physics.Raycast(
-                        rayOrigin,
-                        wallDirection,
-                        2f
-                    );
-
+    Physics.Raycast(
+        rayOrigin,
+        wallDirection,
+        2f,
+        ~0,
+        QueryTriggerInteraction.Ignore
+    );
                 // Açýklýk bulundu
                 if (!blocked)
                 {
@@ -230,11 +261,10 @@ public class CatStateMachine : MonoBehaviour
             foreach (Vector3 gapCenter in gapCenters)
             {
                 Vector3 entrancePosition =
-                    gapCenter - wallDirection * 0.6f;
+     gapCenter - wallDirection * 0.6f;
 
                 Vector3 exitPosition =
                     gapCenter + wallDirection * 0.6f;
-
                 NavMeshHit entranceHit;
                 NavMeshHit exitHit;
 
@@ -364,21 +394,128 @@ public class CatStateMachine : MonoBehaviour
     }
     void SearchingState()
     {
-        // Kedi butonu arayacak.
-    }
+        if (Time.time < nextScanTime)
+            return;
 
+        nextScanTime =
+            Time.time + scanInterval;
+
+        Vector3 buttonPosition;
+
+        // Önce çevrede buton var mý kontrol et.
+        if (sensor.TryFindButton(
+            out buttonPosition))
+        {
+            detectedButtonPosition =
+                buttonPosition;
+
+            buttonDetected =
+                true;
+
+            hasExplorationTarget =
+                false;
+
+            agent.ResetPath();
+
+            currentState =
+                CatState.MovingToButton;
+
+            Debug.Log(
+                "Buton bulundu. Kedi butona gidiyor."
+            );
+
+            return;
+        }
+
+        // Kedi zaten bir keþif noktasýna gidiyorsa
+        // oraya ulaþmasýný bekle.
+        if (hasExplorationTarget)
+        {
+            if (!agent.pathPending &&
+                agent.remainingDistance <= 0.3f)
+            {
+                visitedPoints.Add(
+                    explorationTarget
+                );
+
+                hasExplorationTarget =
+                    false;
+
+                Debug.Log(
+                    "Bu bölge araþtýrýldý."
+                );
+            }
+
+            return;
+        }
+
+        // Buton görünmüyorsa yeni bir bölge ara.
+        Vector3 newExplorationPoint;
+
+        if (sensor.TryFindExplorationPoint(
+    visitedPoints,
+    visitedPointRadius,
+    searchArea,
+    out newExplorationPoint))
+        {
+            explorationTarget =
+                newExplorationPoint;
+
+            hasExplorationTarget =
+                true;
+
+            agent.SetDestination(
+                explorationTarget
+            );
+
+            Debug.Log(
+                "Kedi yeni bir bölgeyi keþfetmeye gidiyor."
+            );
+        }
+        else
+        {
+            Debug.Log(
+                "Yeni keþif noktasý bulunamadý."
+            );
+        }
+    }
     void MovingState()
     {
-        // Kedi NavMesh ile butona gidecek.
-    }
+        if (!buttonDetected)
+        {
+            currentState =
+                CatState.Searching;
 
+            return;
+        }
+
+        agent.SetDestination(
+            detectedButtonPosition
+        );
+
+        if (!agent.pathPending &&
+            agent.remainingDistance <= 0.5f)
+        {
+            currentState =
+                CatState.ActivatingButton;
+
+            Debug.Log(
+                "Kedi butona ulaþtý."
+            );
+        }
+    }
     void ActivatingState()
     {
-        // Kedi butonu aktif edecek.
+        currentState =
+            CatState.TaskComplete;
+
+        Debug.Log(
+            "Kedi butona bastý, görev tamamlandý."
+        );
     }
 
     void TaskCompleteState()
     {
-        // Görev tamamlandý.
+        agent.ResetPath();
     }
 }

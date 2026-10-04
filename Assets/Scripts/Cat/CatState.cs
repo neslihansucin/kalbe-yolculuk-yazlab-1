@@ -1,6 +1,9 @@
-using UnityEngine;
-
-public class CatState
+public enum CatState
 {
-    
+    FollowingPlayer,
+    CrossingObstacle,
+    Searching,
+    MovingToButton,
+    ActivatingButton,
+    TaskComplete
 }
