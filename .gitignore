@@ -6,6 +6,7 @@
 .vs/
 .vscode/
 .idea/
+obj/
 *.csproj
 *.sln
 *.slnx

@@ -693,6 +693,7 @@ MonoBehaviour:
   playerInput: {fileID: 1763304754}
   sendButton: {fileID: 1894034320}
   guardResponseText: {fileID: 287466774}
+  guardController: {fileID: 989408710}
 --- !u!1 &803510168
 GameObject:
   m_ObjectHideFlags: 0
@@ -865,6 +866,7 @@ GameObject:
   - component: {fileID: 989408708}
   - component: {fileID: 989408707}
   - component: {fileID: 989408706}
+  - component: {fileID: 989408710}
   m_Layer: 0
   m_Name: Guard
   m_TagString: Untagged
@@ -967,6 +969,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &989408710
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 989408705}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d077bddf1caa92442a563fd4994b8d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GuardController
+  testHasMemoryOrb: 0
+  testHintLevel: 1
 --- !u!1 &1228109000
 GameObject:
   m_ObjectHideFlags: 0
