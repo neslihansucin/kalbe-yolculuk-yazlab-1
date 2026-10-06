@@ -44,7 +44,12 @@ public class CatStateMachine : MonoBehaviour
     private float nextScanTime = 0f;
 
     [SerializeField]
-    private Collider searchArea;
+    private Collider searchArea; 
+    private float taskCompleteTime;
+    public float followAgainDelay = 2.5f;
+
+
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -397,53 +402,37 @@ public class CatStateMachine : MonoBehaviour
         if (Time.time < nextScanTime)
             return;
 
-        nextScanTime =
-            Time.time + scanInterval;
+        nextScanTime = Time.time + scanInterval;
 
         Vector3 buttonPosition;
 
         // Önce çevrede buton var mý kontrol et.
-        if (sensor.TryFindButton(
-            out buttonPosition))
+        if (sensor.TryFindButton(out buttonPosition))
         {
-            detectedButtonPosition =
-                buttonPosition;
-
-            buttonDetected =
-                true;
-
-            hasExplorationTarget =
-                false;
+            detectedButtonPosition = buttonPosition;
+            buttonDetected = true;
+            hasExplorationTarget = false;
 
             agent.ResetPath();
 
-            currentState =
-                CatState.MovingToButton;
+            currentState = CatState.MovingToButton;
 
-            Debug.Log(
-                "Buton bulundu. Kedi butona gidiyor."
-            );
+            Debug.Log("Buton bulundu. Kedi butona gidiyor.");
 
             return;
         }
 
-        // Kedi zaten bir keþif noktasýna gidiyorsa
-        // oraya ulaþmasýný bekle.
+        // Kedi zaten bir keþif noktasýna gidiyorsa oraya ulaþmasýný bekle.
         if (hasExplorationTarget)
         {
             if (!agent.pathPending &&
                 agent.remainingDistance <= 0.3f)
             {
-                visitedPoints.Add(
-                    explorationTarget
-                );
+                visitedPoints.Add(explorationTarget);
 
-                hasExplorationTarget =
-                    false;
+                hasExplorationTarget = false;
 
-                Debug.Log(
-                    "Bu bölge araþtýrýldý."
-                );
+                Debug.Log("Bu bölge araþtýrýldý.");
             }
 
             return;
@@ -453,30 +442,38 @@ public class CatStateMachine : MonoBehaviour
         Vector3 newExplorationPoint;
 
         if (sensor.TryFindExplorationPoint(
-    visitedPoints,
-    visitedPointRadius,
-    searchArea,
-    out newExplorationPoint))
+            visitedPoints,
+            visitedPointRadius,
+            searchArea,
+            out newExplorationPoint))
         {
-            explorationTarget =
-                newExplorationPoint;
+            explorationTarget = newExplorationPoint;
+            hasExplorationTarget = true;
 
-            hasExplorationTarget =
-                true;
+            agent.SetDestination(explorationTarget);
 
-            agent.SetDestination(
-                explorationTarget
-            );
-
-            Debug.Log(
-                "Kedi yeni bir bölgeyi keþfetmeye gidiyor."
-            );
+            Debug.Log("Kedi yeni bir bölgeyi keþfetmeye gidiyor.");
         }
         else
         {
-            Debug.Log(
-                "Yeni keþif noktasý bulunamadý."
-            );
+            Debug.Log("Yeni keþif noktasý bulunamadý.");
+
+            agent.ResetPath();
+
+            gapSelected = false;
+            reachedGapEntrance = false;
+
+            selectedGapEntrance = Vector3.zero;
+            selectedGapExit = Vector3.zero;
+
+            buttonDetected = false;
+            hasExplorationTarget = false;
+
+            visitedPoints.Clear();
+
+            currentState = CatState.FollowingPlayer;
+
+            Debug.Log("Kedi butonu bulamadý, oyuncuya geri dönüyor.");
         }
     }
     void MovingState()
@@ -506,16 +503,21 @@ public class CatStateMachine : MonoBehaviour
     }
     void ActivatingState()
     {
-        currentState =
-            CatState.TaskComplete;
+        taskCompleteTime = Time.time;
 
-        Debug.Log(
-            "Kedi butona bastý, görev tamamlandý."
-        );
+        currentState = CatState.TaskComplete;
+
+        Debug.Log("Kedi butona bastý, görev tamamlandý.");
     }
-
     void TaskCompleteState()
     {
         agent.ResetPath();
+
+        if (Time.time >= taskCompleteTime + followAgainDelay)
+        {
+            currentState = CatState.FollowingPlayer;
+
+            Debug.Log("Kedi tekrar oyuncuyu takip ediyor.");
+        }
     }
 }
