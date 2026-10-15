@@ -7,33 +7,71 @@ public class SphereInteraction : MonoBehaviour
     [SerializeField] private GameObject sphereText;
     [SerializeField] private Transform sphereHoldPoint;
 
+    [Header("Küre Yerleþtirme")]
+    [SerializeField] private Transform spherePlacementPoint;
+    [SerializeField] private Transform playerTransform;
+    [SerializeField] private float placementDistance = 2f;
+
+    [Header("Kalp Merkezi Mesajý")]
+    [SerializeField] private GameObject heartRepairText;
+
     private PlayerInventory playerInventory;
     private bool playerNearby = false;
     private bool collected = false;
+    private bool placed = false;
 
     private void Start()
     {
-        sphereText.SetActive(false);
+        if (sphereText != null)
+            sphereText.SetActive(false);
+
+        if (heartRepairText != null)
+            heartRepairText.SetActive(false);
     }
-
-
 
     private void Update()
     {
-        if (Keyboard.current != null &&
-            Keyboard.current.fKey.wasPressedThisFrame)
-        {
-            Debug.Log("F tuþuna basýldý!");
+        if (Keyboard.current == null)
+            return;
 
+        // F tuþuyla küreyi al
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+        {
             if (playerNearby && !collected)
-            {
-                Debug.Log("Küre alma iþlemi baþladý!");
                 CollectSphere();
-            }
+        }
+
+        // Kalp merkezine yaklaþýnca mesajý göster
+        UpdateHeartRepairText();
+
+        // Y tuþuyla küreyi yerleþtir
+        if (Keyboard.current.yKey.wasPressedThisFrame)
+        {
+            if (collected && !placed)
+                PlaceSphere();
         }
     }
 
+    private void UpdateHeartRepairText()
+    {
+        if (heartRepairText == null ||
+            spherePlacementPoint == null ||
+            playerTransform == null)
+            return;
 
+        float distance = Vector3.Distance(
+            playerTransform.position,
+            spherePlacementPoint.position
+        );
+
+        bool showMessage =
+            collected &&
+            !placed &&
+            distance <= placementDistance;
+
+        if (heartRepairText.activeSelf != showMessage)
+            heartRepairText.SetActive(showMessage);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -44,8 +82,11 @@ public class SphereInteraction : MonoBehaviour
 
         if (playerInventory != null)
         {
+            playerTransform = other.transform;
             playerNearby = true;
-            sphereText.SetActive(true);
+
+            if (sphereText != null)
+                sphereText.SetActive(true);
         }
     }
 
@@ -54,7 +95,9 @@ public class SphereInteraction : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerNearby = false;
-            sphereText.SetActive(false);
+
+            if (sphereText != null)
+                sphereText.SetActive(false);
         }
     }
 
@@ -67,19 +110,21 @@ public class SphereInteraction : MonoBehaviour
         collected = true;
         playerNearby = false;
 
-        sphereText.SetActive(false);
+        if (sphereText != null)
+            sphereText.SetActive(false);
 
         Collider sphereCollider = GetComponent<Collider>();
+
         if (sphereCollider != null)
             sphereCollider.enabled = false;
 
         Rigidbody rb = GetComponent<Rigidbody>();
+
         if (rb != null)
         {
             rb.isKinematic = true;
             rb.useGravity = false;
         }
-
 
         transform.SetParent(sphereHoldPoint);
         transform.localPosition = Vector3.zero;
@@ -88,14 +133,36 @@ public class SphereInteraction : MonoBehaviour
         SphereFloating floating = GetComponent<SphereFloating>();
 
         if (floating != null)
-        {
             floating.StartFloating();
-            Debug.Log("Küre süzülmeye baþladý!");
-        }
-        else
-        {
-            Debug.LogWarning("SphereFloating bileþeni bulunamadý!");
-        }
+    }
 
+    private void PlaceSphere()
+    {
+        if (spherePlacementPoint == null || playerTransform == null)
+            return;
+
+        float distance = Vector3.Distance(
+            playerTransform.position,
+            spherePlacementPoint.position
+        );
+
+        if (distance > placementDistance)
+            return;
+
+        SphereFloating floating = GetComponent<SphereFloating>();
+
+        if (floating != null)
+            floating.enabled = false;
+
+        transform.SetParent(spherePlacementPoint);
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+
+        placed = true;
+
+        if (heartRepairText != null)
+            heartRepairText.SetActive(false);
+
+        Debug.Log("Küre kalbin merkezine yerleþtirildi!");
     }
 }
