@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class OllamaClient
 {
-    private static readonly HttpClient httpClient = new HttpClient();
+    private static readonly HttpClient httpClient = new HttpClient()
+    {
+        Timeout = System.TimeSpan.FromSeconds(15)
+    };
 
     private const string apiUrl = "http://localhost:11434/api/generate";
     private const string modelName = "gemma3:4b";
@@ -76,18 +79,15 @@ public class OllamaClient
 
         using HttpResponseMessage response = await httpClient.PostAsync(apiUrl, content);
 
-        response.EnsureSuccessStatusCode();
 
         string rawResponse = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)
         {
-            Debug.LogError(
+            throw new HttpRequestException(
                 $"Ollama hata verdi. Status: {(int)response.StatusCode} {response.StatusCode}\n" +
                 $"Cevap: {rawResponse}"
                 );
-
-            return null;
         }
 
         OllamaGenerateResponse ollamaResponse =

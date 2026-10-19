@@ -7,18 +7,39 @@ public class GuardController : MonoBehaviour
     [SerializeField] private int testHintLevel = 0;  // sadece test icin
 
     private readonly OllamaClient ollamaClient = new OllamaClient();
-    private readonly GuardPromptBuilder propmBuilder = new GuardPromptBuilder();
+    private readonly GuardPromptBuilder promptBuilder = new GuardPromptBuilder();
     private readonly GuardResponseValidator responseValidator = new GuardResponseValidator();
 
     public async Task<GuardLlmResponse> SendMessageAsync(string message)
     {
-        string propmpt = propmBuilder.BuildPrompt(message, testHasMemoryOrb, testHintLevel);
+        string prompt = promptBuilder.BuildPrompt(message, testHasMemoryOrb, testHintLevel);
         
-        string modelResponse = await ollamaClient.SendPromptAsync(propmpt);
+        string modelResponse = await ollamaClient.SendPromptAsync(prompt);
 
-        Debug.Log($"[Guard Raw] {modelResponse}");
+        if(string.IsNullOrWhiteSpace(modelResponse))
+        {
+            Debug.LogError("[Guard LLM] Model boþ cevap döndürdü.");
+            return null;
+        }
 
-        GuardLlmResponse guardResponse = JsonUtility.FromJson<GuardLlmResponse>(modelResponse);
+        GuardLlmResponse guardResponse;
+
+        try
+        {
+            guardResponse = JsonUtility.FromJson<GuardLlmResponse>(modelResponse);
+        }
+        catch(System.Exception exception)
+        {
+            Debug.LogError($"[Guard LLM] JSON ayrýþtýrýlamadý: {exception.Message}\n" + $"Ham cevap: {modelResponse}");
+
+            return null;
+        }
+
+        if (guardResponse == null)
+        {
+            Debug.LogError("[Guard LLM] JSON nesneye dönüþtürülemedi.");
+            return null;
+        }
 
         Debug.Log(
         $"[Guard LLM] intent={guardResponse.intent}, " +
