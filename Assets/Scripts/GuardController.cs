@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class GuardController : MonoBehaviour
 {
-    [SerializeField] private bool testHasMemoryOrb = false;
-    [SerializeField] private int testHintLevel = 0;  // sadece test icin
+    [SerializeField] private GameManager gameManager;
 
     private readonly OllamaClient ollamaClient = new OllamaClient();
     private readonly GuardPromptBuilder promptBuilder = new GuardPromptBuilder();
@@ -12,7 +11,7 @@ public class GuardController : MonoBehaviour
 
     public async Task<GuardLlmResponse> SendMessageAsync(string message)
     {
-        string prompt = promptBuilder.BuildPrompt(message, testHasMemoryOrb, testHintLevel);
+        string prompt = promptBuilder.BuildPrompt(message, gameManager.State.HasMemoryOrb, gameManager.State.GuardHintLevel);
         
         string modelResponse = await ollamaClient.SendPromptAsync(prompt);
 
@@ -44,17 +43,22 @@ public class GuardController : MonoBehaviour
         Debug.Log(
         $"[Guard LLM] intent={guardResponse.intent}, " +
         $"action={guardResponse.action}, " +
-        $"hasMemoryOrb={testHasMemoryOrb}, " +
-        $"hintLevel={testHintLevel}, " +
+        $"hasMemoryOrb={gameManager.State.HasMemoryOrb}, " +
+        $"hintLevel={gameManager.State.GuardHintLevel}, " +
         $"reply={guardResponse.reply}"
         );
 
-        bool isValid = responseValidator.IsValid(guardResponse, testHasMemoryOrb);
+        bool isValid = responseValidator.IsValid(guardResponse, gameManager.State.HasMemoryOrb);
 
         if (!isValid)
         {
             Debug.LogError("[Guard Validator] LLM cevabý geçersiz.");
             return null;
+        }
+
+        if(guardResponse.intent == "heal" && guardResponse.action == "request_more_info" && !gameManager.State.HasMemoryOrb)
+        {
+            gameManager.State.IncreaseGuardHintLevel();
         }
 
         return guardResponse;
