@@ -3,7 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class OllamaClient
+public class OllamaClient : ILlmClient
 {
     private static readonly HttpClient httpClient = new HttpClient()
     {

@@ -5,15 +5,20 @@ public class GuardController : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
 
-    private readonly OllamaClient ollamaClient = new OllamaClient();
+    private ILlmClient llmClient;
     private readonly GuardPromptBuilder promptBuilder = new GuardPromptBuilder();
     private readonly GuardResponseValidator responseValidator = new GuardResponseValidator();
+
+    public void Initialize(ILlmClient llmClient)
+    {
+        this.llmClient = llmClient;
+    }
 
     public async Task<GuardLlmResponse> SendMessageAsync(string message)
     {
         string prompt = promptBuilder.BuildPrompt(message, gameManager.State.HasMemoryOrb, gameManager.State.GuardHintLevel);
         
-        string modelResponse = await ollamaClient.SendPromptAsync(prompt);
+        string modelResponse = await llmClient.SendPromptAsync(prompt);
 
         if(string.IsNullOrWhiteSpace(modelResponse))
         {
