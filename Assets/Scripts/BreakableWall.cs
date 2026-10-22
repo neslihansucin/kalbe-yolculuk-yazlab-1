@@ -1,18 +1,39 @@
+
 using UnityEngine;
 using System.Collections;
 
 public class BreakableWall : MonoBehaviour
 {
     public Rigidbody[] wallPieces;
+    public Collider[] oldWallColliders;
+
     public float force = 5f;
     public float destroyDelay = 1.5f;
 
+    private bool isBroken = false;
+
     public void BreakWall()
     {
+        if (isBroken)
+            return;
+
+        isBroken = true;
+
         Debug.Log("BreakWall çalýþtý!");
 
+        // Eski görünmez duvarlarýn Collider'larýný kapat
+        foreach (Collider wallCollider in oldWallColliders)
+        {
+            if (wallCollider != null)
+                wallCollider.enabled = false;
+        }
+
+        // Yeni maðara parçalarýný savur
         foreach (Rigidbody piece in wallPieces)
         {
+            if (piece == null)
+                continue;
+
             piece.isKinematic = false;
 
             Vector3 randomDirection = new Vector3(
