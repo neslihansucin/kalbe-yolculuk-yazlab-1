@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class GuardInteraction : MonoBehaviour
+public class GuardInteraction : MonoBehaviour, IInteracable
 {
+
+    [SerializeField] private DialogueUI dialogueUI;
     private bool isPlayerInRange;
     public bool IsPlayerInRange => isPlayerInRange;
 
@@ -21,7 +23,12 @@ public class GuardInteraction : MonoBehaviour
                 return;
 
         isPlayerInRange = false;
+        dialogueUI.CloseDialogue();
         Debug.Log("[Guard Interaction] Oyuncu etki alanýndan çýktý.");
     }
 
+    public void Interact()
+    {
+        dialogueUI.OpenDialogue();
+    }
 }

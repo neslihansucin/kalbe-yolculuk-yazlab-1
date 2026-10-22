@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class DialogueUI : MonoBehaviour
 {
@@ -8,12 +9,32 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private Button sendButton;
     [SerializeField] private TMP_Text guardResponseText;
     [SerializeField] private GuardController guardController;
+    [SerializeField] private GameObject dialoguePanel;
+
     private bool isWaitingForResponse = false;
 
     private void Start()
     {
         sendButton.onClick.AddListener(OnSendButtonClicked);
         playerInput.onSubmit.AddListener(OnInputSubmitted);
+        dialoguePanel.SetActive(false);
+    }
+
+    public void OpenDialogue()
+    {
+        dialoguePanel.SetActive(true);
+        playerInput.ActivateInputField();
+    }
+
+    public void CloseDialogue()
+    {
+        StartCoroutine(CloseDialogueNextFrame());
+    }
+
+    private IEnumerator CloseDialogueNextFrame()
+    {
+        yield return null;
+        dialoguePanel.SetActive(false);
     }
 
     private void OnInputSubmitted(string text)
