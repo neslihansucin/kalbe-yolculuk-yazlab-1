@@ -13,6 +13,6 @@ public class GameState
 
     public void IncreaseGuardHintLevel()
     {
-        GuardHintLevel = Mathf.Min(GuardHintLevel + 1, 2);
+        GuardHintLevel = Mathf.Min(GuardHintLevel + 1, 1);
     }
 }
