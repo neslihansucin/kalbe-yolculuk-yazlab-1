@@ -5,6 +5,7 @@ public class GuardInteraction : MonoBehaviour, IInteracable
 
     [SerializeField] private DialogueUI dialogueUI;
     private bool isPlayerInRange;
+    private bool canInteract = true;
     public bool IsPlayerInRange => isPlayerInRange;
 
     private void OnTriggerEnter(Collider other)
@@ -30,5 +31,11 @@ public class GuardInteraction : MonoBehaviour, IInteracable
     public void Interact()
     {
         dialogueUI.OpenDialogue();
+    }
+
+    public void DisableInteraction()
+    {
+        canInteract = false;
+        dialogueUI.CloseDialogue();
     }
 }

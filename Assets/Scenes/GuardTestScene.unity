@@ -1124,6 +1124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GuardActionHandler
   doorController: {fileID: 2122325768}
+  guardInteraction: {fileID: 1713066837}
 --- !u!1 &1228109000
 GameObject:
   m_ObjectHideFlags: 0

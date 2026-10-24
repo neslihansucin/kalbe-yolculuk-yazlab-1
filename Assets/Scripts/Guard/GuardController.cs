@@ -4,6 +4,7 @@ using UnityEngine;
 public class GuardController : MonoBehaviour
 {
     [SerializeField] private GameManager gameManager;
+    [SerializeField] private GuardActionHandler actionHandler;
 
     private ILlmClient llmClient;
     private readonly GuardPromptBuilder promptBuilder = new GuardPromptBuilder();
@@ -65,6 +66,8 @@ public class GuardController : MonoBehaviour
         {
             gameManager.State.IncreaseGuardHintLevel();
         }
+
+        actionHandler.HandleAction(guardResponse.action);
 
         return guardResponse;
     }
