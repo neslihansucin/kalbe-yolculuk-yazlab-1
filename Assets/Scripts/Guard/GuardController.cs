@@ -62,12 +62,36 @@ public class GuardController : MonoBehaviour
             return null;
         }
 
-        if(guardResponse.intent == "heal" && guardResponse.action == "request_more_info" && !gameManager.State.HasMemoryOrb)
+        if (!GuardActionParser.TryParse(
+        guardResponse.action,
+        out GuardAction action))
+        {
+            Debug.LogError(
+                $"[Guard Action] Bilinmeyen action: {guardResponse.action}"
+            );
+
+            return null;
+        }
+
+        if (!GuardIntentParser.TryParse(
+        guardResponse.intent,
+        out GuardIntent intent))
+        {
+            Debug.LogError(
+                $"[Guard Intent] Bilinmeyen intent: {guardResponse.intent}"
+            );
+
+            return null;
+        }
+
+        if (intent == GuardIntent.Heal &&
+            action == GuardAction.RequestMoreInfo &&
+            !gameManager.State.HasMemoryOrb)
         {
             gameManager.State.IncreaseGuardHintLevel();
         }
 
-        actionHandler.HandleAction(guardResponse.action);
+        actionHandler.HandleAction(action);
 
         return guardResponse;
     }

@@ -30,6 +30,8 @@ public class GuardInteraction : MonoBehaviour, IInteracable
 
     public void Interact()
     {
+        if (!canInteract)
+            return;
         dialogueUI.OpenDialogue();
     }
 
