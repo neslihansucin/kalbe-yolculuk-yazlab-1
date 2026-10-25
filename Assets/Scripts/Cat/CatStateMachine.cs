@@ -47,7 +47,8 @@ public class CatStateMachine : MonoBehaviour
     private Collider searchArea; 
     private float taskCompleteTime;
     public float followAgainDelay = 2.5f;
-
+    [Header("Camera")]
+    [SerializeField] private CameraFollow cameraFollow;
 
 
     void Start()
@@ -76,13 +77,22 @@ public class CatStateMachine : MonoBehaviour
     }
     void Update()
     {
+
         if (Keyboard.current != null &&
             Keyboard.current.eKey.wasPressedThisFrame &&
             currentState == CatState.FollowingPlayer)
         {
             currentState = CatState.CrossingObstacle;
+
+            // Kamera kediyi takip etmeye baþlasýn
+            if (cameraFollow != null)
+            {
+                cameraFollow.WatchCat();
+            }
+
             Debug.Log("Kedi komutu aldý, engeli geçiyor...");
         }
+
 
         switch (currentState)
         {
@@ -501,14 +511,22 @@ public class CatStateMachine : MonoBehaviour
             );
         }
     }
+
     void ActivatingState()
     {
         taskCompleteTime = Time.time;
 
         currentState = CatState.TaskComplete;
 
+        // Butona basýldýðýnda kamera oyuncuya dönsün
+        if (cameraFollow != null)
+        {
+            cameraFollow.WatchPlayer();
+        }
+
         Debug.Log("Kedi butona bastý, görev tamamlandý.");
     }
+
     void TaskCompleteState()
     {
         agent.ResetPath();
