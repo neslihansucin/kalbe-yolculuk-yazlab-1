@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     public float speed = 5f;
-    public float rotationSpeed = 150f;
+    public float rotationSpeed = 0.15f;
 
     public float normalHeight = 2f;
     public float crouchHeight = 1f;
@@ -29,21 +29,29 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Mouse ile dönme
-        float mouseX = Mouse.current.delta.x.ReadValue();
+
+        if (Mouse.current != null)
+        {
+            float mouseX = Mouse.current.delta.x.ReadValue();
+
+            transform.Rotate(
+                0f,
+                mouseX * rotationSpeed,
+                0f
+            );
+        }
+
+        // A ve D ile oyuncuyu döndür
+        float turnInput = moveInput.x;
 
         transform.Rotate(
             0f,
-            mouseX * rotationSpeed * Time.deltaTime,
+            turnInput * 120f * Time.deltaTime,
             0f
         );
 
-        // Oyuncu hareketi
-        Vector3 move =
-            transform.forward * moveInput.y +
-            transform.right * moveInput.x;
-
-        move = Vector3.ClampMagnitude(move, 1f);
+        // W ve S ile ileri-geri hareket et
+        Vector3 move = transform.forward * moveInput.y;
 
         controller.Move(move * speed * Time.deltaTime);
 

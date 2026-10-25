@@ -15,6 +15,9 @@ public class SphereInteraction : MonoBehaviour
     [Header("Kalp Merkezi Mesajý")]
     [SerializeField] private GameObject heartRepairText;
 
+    [Header("Kalp Iþýklarý")]
+    [SerializeField] private HeartLightController heartLightController;
+
     private PlayerInventory playerInventory;
     private bool playerNearby = false;
     private bool collected = false;
@@ -107,6 +110,7 @@ public class SphereInteraction : MonoBehaviour
             return;
 
         playerInventory.CollectSphere();
+
         collected = true;
         playerNearby = false;
 
@@ -162,6 +166,12 @@ public class SphereInteraction : MonoBehaviour
 
         if (heartRepairText != null)
             heartRepairText.SetActive(false);
+
+        // Küre yerleþtirilince üç ýþýðý yak
+        if (heartLightController != null)
+        {
+            heartLightController.TurnOnLights();
+        }
 
         Debug.Log("Küre kalbin merkezine yerleþtirildi!");
     }

@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using System.Collections;
 
@@ -9,6 +8,8 @@ public class BreakableWall : MonoBehaviour
 
     public float force = 5f;
     public float destroyDelay = 1.5f;
+
+    [SerializeField] private ParticleSystem explosionParticles;
 
     private bool isBroken = false;
 
@@ -27,8 +28,17 @@ public class BreakableWall : MonoBehaviour
             if (wallCollider != null)
                 wallCollider.enabled = false;
         }
+        if (explosionParticles != null)
+        {
+            explosionParticles.Play();
+            Debug.Log("Küçük taþ patlama efekti çalýþtýrýldý!");
+        }
+        else
+        {
+            Debug.LogWarning("Patlama efekti baðlý deðil!");
+        }
 
-        // Yeni maðara parçalarýný savur
+        // Duvar parçalarýný savur
         foreach (Rigidbody piece in wallPieces)
         {
             if (piece == null)
