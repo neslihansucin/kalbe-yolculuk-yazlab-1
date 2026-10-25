@@ -5813,6 +5813,50 @@ MonoBehaviour:
   agent: {fileID: 1418137328}
   catAnimator: {fileID: 1115923879}
   walkAnimationSpeed: 2
+--- !u!1 &1450604971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1450604973}
+  - component: {fileID: 1450604972}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1450604972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450604971}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d506b688d02384cb16a6142f9705bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameManager
+--- !u!4 &1450604973
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1450604971}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.75982, y: 4.9462, z: 44.45662}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1467112198
 GameObject:
   m_ObjectHideFlags: 0
@@ -7989,6 +8033,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6395a2d777f5f64b99ac42ac246467b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  gameManager: {fileID: 1450604972}
 --- !u!1 &1874851064
 GameObject:
   m_ObjectHideFlags: 0
@@ -11214,3 +11259,4 @@ SceneRoots:
   - {fileID: 1511023228}
   - {fileID: 1536737960}
   - {fileID: 1348457498}
+  - {fileID: 1450604973}
