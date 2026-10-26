@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    public bool HasSphere { get; private set; }
+    [SerializeField] private GameManager gameManager;
+    public bool HasSphere => gameManager.State.HasMemoryOrb;
 
     public void CollectSphere()
     {
-        HasSphere = true;
+        gameManager.State.CollectMemoryOrb();
         Debug.Log("Mutlu Anýlar Küresi alýndý!");
     }
 }
