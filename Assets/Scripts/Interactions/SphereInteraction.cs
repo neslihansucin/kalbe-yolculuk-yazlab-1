@@ -17,6 +17,8 @@ public class SphereInteraction : MonoBehaviour
 
     [Header("Kalp Iþýklarý")]
     [SerializeField] private HeartLightController heartLightController;
+    [Header("Oyun Sonu")]
+    [SerializeField] private EndGameManager endGameManager;
 
     private PlayerInventory playerInventory;
     private bool playerNearby = false;
@@ -171,6 +173,16 @@ public class SphereInteraction : MonoBehaviour
         if (heartLightController != null)
         {
             heartLightController.TurnOnLights();
+        }
+
+        // Küre yerleþtirildikten 2 saniye sonra oyun sonunu aç
+        if (endGameManager != null)
+        {
+            endGameManager.HeartPlaced();
+        }
+        else
+        {
+            Debug.LogWarning("EndGameManager baðlanmamýþ!");
         }
 
         Debug.Log("Küre kalbin merkezine yerleþtirildi!");

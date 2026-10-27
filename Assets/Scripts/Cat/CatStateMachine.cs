@@ -16,6 +16,11 @@ public class CatStateMachine : MonoBehaviour
 
     private NavMeshAgent agent;
     public Transform obstacleWall;
+    [Header("Wall Detection")]
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float wallDetectionDistance = 12f;
+    [SerializeField] private float wallDetectionAngle = 120f;
+    [SerializeField] private int wallRayCount = 25;
     private Vector3 crossingTarget;
     private bool crossingTargetChosen = false;
 
@@ -46,7 +51,10 @@ public class CatStateMachine : MonoBehaviour
     [SerializeField]
     private Collider searchArea; 
     private float taskCompleteTime;
+    private bool missionCompleted = false;
     public float followAgainDelay = 2.5f;
+    [SerializeField] private float wallSearchTimeout = 5f;
+    private float wallSearchStartTime;
     [Header("Camera")]
     [SerializeField] private CameraFollow cameraFollow;
 
@@ -79,10 +87,12 @@ public class CatStateMachine : MonoBehaviour
     {
 
         if (Keyboard.current != null &&
-            Keyboard.current.eKey.wasPressedThisFrame &&
-            currentState == CatState.FollowingPlayer)
+     Keyboard.current.eKey.wasPressedThisFrame &&
+     currentState == CatState.FollowingPlayer &&
+     !missionCompleted)
         {
             currentState = CatState.CrossingObstacle;
+            wallSearchStartTime = Time.time;
 
             // Kamera kediyi takip etmeye baþlasýn
             if (cameraFollow != null)
@@ -93,7 +103,30 @@ public class CatStateMachine : MonoBehaviour
             Debug.Log("Kedi komutu aldý, engeli geçiyor...");
         }
 
+        if (currentState == CatState.CrossingObstacle &&
+    !gapSelected &&
+    Time.time - wallSearchStartTime >= wallSearchTimeout)
+        {
+            Debug.LogWarning("Kedi 5 saniyede geçit bulamadý. Tekrar denenebilir.");
 
+            if (agent.isOnNavMesh)
+                agent.ResetPath();
+
+            obstacleWall = null;
+
+            gapSelected = false;
+            reachedGapEntrance = false;
+
+            selectedGapEntrance = Vector3.zero;
+            selectedGapExit = Vector3.zero;
+
+            currentState = CatState.FollowingPlayer;
+
+            if (cameraFollow != null)
+                cameraFollow.WatchPlayer();
+
+            return;
+        }
         switch (currentState)
         {
             case CatState.FollowingPlayer:
@@ -141,11 +174,66 @@ public class CatStateMachine : MonoBehaviour
             agent.ResetPath();
         }
     }
+    private bool TryDetectWall(out Transform detectedWall)
+    {
+        detectedWall = null;
+
+        Vector3 origin = transform.position + Vector3.up * 0.35f;
+        float nearestDistance = Mathf.Infinity;
+
+        for (int i = 0; i < wallRayCount; i++)
+        {
+            float angle = -wallDetectionAngle / 2f
+                + wallDetectionAngle * i / (wallRayCount - 1f);
+
+            Vector3 direction =
+                Quaternion.Euler(0f, angle, 0f) * transform.forward;
+
+            Debug.DrawRay(
+                origin,
+                direction * wallDetectionDistance,
+                Color.cyan,
+                0.5f
+            );
+
+            if (Physics.Raycast(
+                origin,
+                direction,
+                out RaycastHit hit,
+                wallDetectionDistance,
+                wallLayer,
+                QueryTriggerInteraction.Ignore))
+            {
+                if (hit.distance < nearestDistance)
+                {
+                    nearestDistance = hit.distance;
+                    ObstacleWallMarker marker =
+     hit.collider.GetComponentInParent<ObstacleWallMarker>();
+
+                    if (marker != null)
+                    {
+                        detectedWall = marker.transform;
+                        nearestDistance = hit.distance;
+                    }
+                }
+            }
+        }
+
+        return detectedWall != null;
+    }
     void CrossingObstacleState()
     {
         if (obstacleWall == null)
-            return;
+        {
+            if (!TryDetectWall(out obstacleWall))
+            {
+                Debug.Log("Kedi henüz bir duvar algýlayamadý.");
+                return;
+            }
 
+            Debug.Log("Kedi duvarý kendi sensörleriyle buldu: "
+                      + obstacleWall.name);
+        }
         // Geçit daha önce seçilmediyse duvarý sadece bir kere tara
         if (!gapSelected)
         {
@@ -514,11 +602,12 @@ public class CatStateMachine : MonoBehaviour
 
     void ActivatingState()
     {
+        missionCompleted = true;
+
         taskCompleteTime = Time.time;
 
         currentState = CatState.TaskComplete;
 
-        // Butona basýldýðýnda kamera oyuncuya dönsün
         if (cameraFollow != null)
         {
             cameraFollow.WatchPlayer();
@@ -526,7 +615,6 @@ public class CatStateMachine : MonoBehaviour
 
         Debug.Log("Kedi butona bastý, görev tamamlandý.");
     }
-
     void TaskCompleteState()
     {
         agent.ResetPath();
