@@ -1,30 +1,47 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerInteraction : MonoBehaviour
 {
-    private IInteracable currentInteracable;
+    private IInteractable currentInteractable;
 
     private void OnTriggerEnter(Collider other)
     {
-        IInteracable interactable = other.GetComponent<IInteracable>();
+        IInteractable interactable =
+            other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable =
+                other.GetComponentInParent<IInteractable>();
+        }
 
         if (interactable == null)
             return;
 
-        currentInteracable = interactable;
+        currentInteractable = interactable;
+
+        Debug.Log("Etkileþim alanýna girildi: " + other.name);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        IInteracable interactable = other.GetComponent<IInteracable>();
+        IInteractable interactable =
+            other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable =
+                other.GetComponentInParent<IInteractable>();
+        }
 
         if (interactable == null)
             return;
 
-        if (currentInteracable == interactable)
+        if (currentInteractable == interactable)
         {
-            currentInteracable = null;
+            currentInteractable = null;
         }
     }
 
@@ -33,6 +50,15 @@ public class PlayerInteraction : MonoBehaviour
         if (!value.isPressed)
             return;
 
-        currentInteracable?.Interact();
+        Debug.Log("E tuþuna basýldý.");
+
+        if (currentInteractable == null)
+        {
+            Debug.LogWarning("Etkileþim nesnesi bulunamadý!");
+            return;
+        }
+
+        currentInteractable.Interact();
+        Debug.Log("Interact çalýþtýrýldý.");
     }
 }

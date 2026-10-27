@@ -1,11 +1,13 @@
+
 using UnityEngine;
 
-public class GuardInteraction : MonoBehaviour, IInteracable
+public class GuardInteraction : MonoBehaviour, IInteractable
 {
-
     [SerializeField] private DialogueUI dialogueUI;
+
     private bool isPlayerInRange;
     private bool canInteract = true;
+
     public bool IsPlayerInRange => isPlayerInRange;
 
     private void OnTriggerEnter(Collider other)
@@ -14,24 +16,28 @@ public class GuardInteraction : MonoBehaviour, IInteracable
             return;
 
         isPlayerInRange = true;
-        Debug.Log("[Guard Interaction] Oyuncu etkileþim alanýna girdi.");
 
+        Debug.Log("[Guard Interaction] Oyuncu etkileþim alanýna girdi.");
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if(!other.CompareTag("Player"))
-                return;
+        if (!other.CompareTag("Player"))
+            return;
 
         isPlayerInRange = false;
         dialogueUI.CloseDialogue();
-        Debug.Log("[Guard Interaction] Oyuncu etki alanýndan çýktý.");
+
+        Debug.Log("[Guard Interaction] Oyuncu etkileþim alanýndan çýktý.");
     }
 
     public void Interact()
     {
         if (!canInteract)
             return;
+
+        Debug.Log("[Guard Interaction] Konuþma ekraný açýlýyor.");
+
         dialogueUI.OpenDialogue();
     }
 
