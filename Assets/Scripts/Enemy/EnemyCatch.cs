@@ -1,15 +1,22 @@
 
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyCatch : MonoBehaviour
 {
+    [Header("Baþlangýç Noktalarý")]
     [SerializeField] private Transform playerStartPoint;
+    [SerializeField] private Transform cat;
+    [SerializeField] private Transform catStartPoint;
+
+    [Header("Düþman Ayarlarý")]
     [SerializeField] private float catchDistance = 1.2f;
 
     private Transform player;
     private CharacterController playerController;
     private PlayerInventory playerInventory;
     private EnemyChase enemyChase;
+    private NavMeshAgent catAgent;
 
     private void Start()
     {
@@ -23,9 +30,15 @@ public class EnemyCatch : MonoBehaviour
         }
 
         player = playerObject.transform;
-        playerController = playerObject.GetComponent<CharacterController>();
-        playerInventory = playerObject.GetComponent<PlayerInventory>();
+        playerController =
+            playerObject.GetComponent<CharacterController>();
+        playerInventory =
+            playerObject.GetComponent<PlayerInventory>();
+
         enemyChase = GetComponent<EnemyChase>();
+
+        if (cat != null)
+            catAgent = cat.GetComponent<NavMeshAgent>();
     }
 
     private void Update()
@@ -52,6 +65,7 @@ public class EnemyCatch : MonoBehaviour
 
     private void ReturnPlayerToStart()
     {
+        // Oyuncuyu baþlangýca gönder
         if (playerController != null)
             playerController.enabled = false;
 
@@ -61,10 +75,46 @@ public class EnemyCatch : MonoBehaviour
         if (playerController != null)
             playerController.enabled = true;
 
-        // Yakalandýktan sonra düþman devriyeye döner
+        // Kediyi de baþlangýca gönder
+        ReturnCatToStart();
+
+        // Düþman devriyeye döner
         if (enemyChase != null)
             enemyChase.StopChasing();
 
-        Debug.Log("Oyuncu yakalandý! Baþlangýca döndü.");
+        Debug.Log("Oyuncu ve kedi baþlangýca döndü.");
+    }
+
+    private void ReturnCatToStart()
+    {
+        if (cat == null || catStartPoint == null)
+        {
+            Debug.LogWarning(
+                "Kedi veya kedi baþlangýç noktasý atanmadý!");
+            return;
+        }
+
+        if (catAgent != null && catAgent.isActiveAndEnabled)
+        {
+            // NavMeshAgent ile güvenli ýþýnlama
+            if (!catAgent.Warp(catStartPoint.position))
+            {
+                Debug.LogWarning(
+                    "Kedi NavMesh üzerinde baþlangýca ýþýnlanamadý!");
+                return;
+            }
+
+            // Eski yolu temizle
+            if (catAgent.isOnNavMesh)
+                catAgent.ResetPath();
+        }
+        else
+        {
+            cat.position = catStartPoint.position;
+        }
+
+        cat.rotation = catStartPoint.rotation;
+
+        Debug.Log("Kedi baþlangýca döndü.");
     }
 }

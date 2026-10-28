@@ -155,39 +155,75 @@ public class CatStateMachine : MonoBehaviour
         }
     }
 
+
     void FollowingPlayerState()
     {
-        if (player == null)
+        if (player == null || agent == null || !agent.isOnNavMesh)
             return;
 
-        float distance = Vector3.Distance(
-            transform.position,
+        // Oyuncunun tam konumu yerine
+        // biraz arkasi ve sagini hedefle
+        Vector3 followTarget =
             player.position
-        );
+            - player.forward * followDistance
+            + player.right * 0.8f;
 
-        if (distance > followDistance)
+        // Kediye uygun NavMesh noktasi bul
+        NavMeshQueryFilter filter = new NavMeshQueryFilter
         {
-            agent.SetDestination(player.position);
-        }
-        else
+            agentTypeID = agent.agentTypeID,
+            areaMask = agent.areaMask
+        };
+
+        if (!NavMesh.SamplePosition(
+            followTarget,
+            out NavMeshHit hit,
+            1.5f,
+            filter))
         {
-            agent.ResetPath();
+            if (agent.hasPath)
+                agent.ResetPath();
+
+            return;
         }
+
+        // Yalnizca yatay mesafeyi kontrol et
+        Vector3 difference =
+            hit.position - transform.position;
+
+        difference.y = 0f;
+
+        // Hedefe yeterince yaklastiysa dur
+        if (difference.sqrMagnitude <= 0.36f)
+        {
+            if (agent.hasPath)
+                agent.ResetPath();
+
+            return;
+        }
+
+        // Oyuncunun yanindaki noktaya ilerle
+        agent.SetDestination(hit.position);
     }
+
     private bool TryDetectWall(out Transform detectedWall)
     {
         detectedWall = null;
 
-        Vector3 origin = transform.position + Vector3.up * 0.35f;
+        Vector3 origin =
+            transform.position + Vector3.up * 0.35f;
+
         float nearestDistance = Mathf.Infinity;
 
         for (int i = 0; i < wallRayCount; i++)
         {
-            float angle = -wallDetectionAngle / 2f
+            float angle =
+                -wallDetectionAngle / 2f
                 + wallDetectionAngle * i / (wallRayCount - 1f);
 
             Vector3 direction =
-                Quaternion.Euler(0f, angle, 0f) * transform.forward;
+                Quaternion.Euler(0f, angle, 0f)
+                * transform.forward;
 
             Debug.DrawRay(
                 origin,
@@ -206,9 +242,9 @@ public class CatStateMachine : MonoBehaviour
             {
                 if (hit.distance < nearestDistance)
                 {
-                    nearestDistance = hit.distance;
                     ObstacleWallMarker marker =
-     hit.collider.GetComponentInParent<ObstacleWallMarker>();
+                        hit.collider.GetComponentInParent
+                        <ObstacleWallMarker>();
 
                     if (marker != null)
                     {
@@ -221,6 +257,7 @@ public class CatStateMachine : MonoBehaviour
 
         return detectedWall != null;
     }
+
     void CrossingObstacleState()
     {
         if (obstacleWall == null)
@@ -242,7 +279,7 @@ public class CatStateMachine : MonoBehaviour
 
             if (renderers.Length == 0)
                 return;
-
+            
             Bounds wallBounds = renderers[0].bounds;
 
             foreach (Renderer rend in renderers)
