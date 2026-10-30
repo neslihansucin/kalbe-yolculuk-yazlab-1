@@ -1945,6 +1945,11 @@ MonoBehaviour:
   useCameraLimits: 1
   xLimits: {x: -15, y: 15}
   zLimits: {x: -39, y: 78}
+  obstacleLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  collisionRadius: 0.25
+  orbitStep: 15
 --- !u!1 &346534958
 GameObject:
   m_ObjectHideFlags: 0
@@ -2004,6 +2009,8 @@ MonoBehaviour:
   - {fileID: 1016533825}
   force: 10
   destroyDelay: 3
+  explosionParticles: {fileID: 0}
+  navMeshSurface: {fileID: 0}
 --- !u!1 &363481233
 GameObject:
   m_ObjectHideFlags: 0
@@ -2545,6 +2552,7 @@ MonoBehaviour:
   placementDistance: 2
   heartRepairText: {fileID: 98013349}
   heartLightController: {fileID: 969114599}
+  endGameManager: {fileID: 0}
 --- !u!114 &513785985
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2921,6 +2929,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCatch
   playerStartPoint: {fileID: 931688148}
+  cat: {fileID: 0}
+  catStartPoint: {fileID: 0}
   catchDistance: 1.2
 --- !u!1 &685622312 stripped
 GameObject:
@@ -5679,7 +5689,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.06666667
+  m_VoxelSize: 0.05
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: b98cea6f5ae32884ea3caef9e9f10cd0, type: 2}
   m_BuildHeightMesh: 0
@@ -5955,10 +5965,17 @@ MonoBehaviour:
   searchPoint: {fileID: 269985841}
   followDistance: 2
   obstacleWall: {fileID: 346534959}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  wallDetectionDistance: 12
+  wallDetectionAngle: 120
+  wallRayCount: 25
   visitedPointRadius: 1.5
   scanInterval: 0.2
   searchArea: {fileID: 18981097}
   followAgainDelay: 2.5
+  wallSearchTimeout: 5
   cameraFollow: {fileID: 330585548}
 --- !u!65 &1418137330
 BoxCollider:
@@ -6022,6 +6039,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CatAnimationController
   agent: {fileID: 1418137328}
   catAnimator: {fileID: 1115923879}
+  walkAnimationSpeed: 2
 --- !u!1 &1467112198
 GameObject:
   m_ObjectHideFlags: 0
@@ -8255,6 +8273,10 @@ MonoBehaviour:
   normalHeight: 2
   crouchHeight: 1
   playerAnimator: {fileID: 861464862}
+  playerSurface: {fileID: 0}
+  navMeshSearchDistance: 1.5
+  maxHorizontalOffset: 0.2
+  gravity: -9.81
 --- !u!114 &1868879382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8267,6 +8289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6395a2d777f5f64b99ac42ac246467b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
+  gameManager: {fileID: 0}
 --- !u!1 &1874851064
 GameObject:
   m_ObjectHideFlags: 0

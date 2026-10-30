@@ -25,8 +25,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private NavMeshQueryFilter navFilter;
     private bool navMeshReady;
+
     [SerializeField] private float gravity = -9.81f;
     private float verticalVelocity = 0f;
+
+    // Ayakta dururken kapsulun merkezini sakla
+    private Vector3 standingCenter;
 
     private static readonly int SpeedHash =
         Animator.StringToHash("Speed");
@@ -37,6 +41,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
+
+        // Normal durustaki kapsul merkezini kaydet
+        standingCenter = controller.center;
 
         if (playerSurface == null)
         {
@@ -59,10 +66,30 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Mouse ile donme
+        // EGILME KONTROLU
+        bool isCrouching =
+            Keyboard.current != null &&
+            Keyboard.current.leftCtrlKey.isPressed;
+
+        // Kapsul yuksekligini degistir
+        float targetHeight =
+            isCrouching ? crouchHeight : normalHeight;
+
+        controller.height = targetHeight;
+
+        // Kapsulun alt noktasi ayni yerde kalsin
+        Vector3 newCenter = standingCenter;
+
+        newCenter.y +=
+            (targetHeight - normalHeight) / 2f;
+
+        controller.center = newCenter;
+
+        // MOUSE ILE DONME
         if (Mouse.current != null)
         {
-            float mouseX = Mouse.current.delta.x.ReadValue();
+            float mouseX =
+                Mouse.current.delta.x.ReadValue();
 
             transform.Rotate(
                 0f,
@@ -71,7 +98,7 @@ public class PlayerController : MonoBehaviour
             );
         }
 
-        // A ve D ile donme
+        // A VE D ILE DONME
         float turnInput = moveInput.x;
 
         transform.Rotate(
@@ -80,8 +107,9 @@ public class PlayerController : MonoBehaviour
             0f
         );
 
-        // W ve S ile hareket
-        Vector3 move = transform.forward * moveInput.y;
+        // W VE S ILE HAREKET
+        Vector3 move =
+            transform.forward * moveInput.y;
 
         Vector3 movement =
             move * speed * Time.deltaTime;
@@ -93,28 +121,26 @@ public class PlayerController : MonoBehaviour
         {
             MoveOnNavMesh(movement);
         }
-        // Player yere bassýn, havada asýlý kalmasýn
-        if (controller.isGrounded && verticalVelocity < 0f)
+
+        // YER CEKIMI
+        if (controller.isGrounded &&
+            verticalVelocity < 0f)
         {
             verticalVelocity = -2f;
         }
         else
         {
-            verticalVelocity += gravity * Time.deltaTime;
+            verticalVelocity +=
+                gravity * Time.deltaTime;
         }
 
         controller.Move(
-            Vector3.up * verticalVelocity * Time.deltaTime
+            Vector3.up *
+            verticalVelocity *
+            Time.deltaTime
         );
-        // Egilme kontrolu
-        bool isCrouching =
-            Keyboard.current != null &&
-            Keyboard.current.leftCtrlKey.isPressed;
 
-        controller.height =
-            isCrouching ? crouchHeight : normalHeight;
-
-        // Animasyon kontrolu
+        // ANIMASYON KONTROLU
         if (playerAnimator != null)
         {
             Vector3 actualMovement =
@@ -125,7 +151,10 @@ public class PlayerController : MonoBehaviour
             float movementSpeed =
                 Mathf.Clamp01(
                     actualMovement.magnitude /
-                    Mathf.Max(speed * Time.deltaTime, 0.0001f)
+                    Mathf.Max(
+                        speed * Time.deltaTime,
+                        0.0001f
+                    )
                 );
 
             playerAnimator.SetFloat(
@@ -142,7 +171,6 @@ public class PlayerController : MonoBehaviour
 
     private void MoveOnNavMesh(Vector3 movement)
     {
-        // CharacterController'in ayak seviyesini kullan
         Vector3 start = new Vector3(
             transform.position.x,
             controller.bounds.min.y + 0.1f,
@@ -160,14 +188,19 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Uzak bir NavMesh adasina tutunmayi engelle
-        Vector3 startOffset = startHit.position - start;
+        Vector3 startOffset =
+            startHit.position - start;
+
         startOffset.y = 0f;
 
-        if (startOffset.magnitude > maxHorizontalOffset)
+        if (startOffset.magnitude >
+            maxHorizontalOffset)
+        {
             return;
+        }
 
-        Vector3 target = startHit.position + movement;
+        Vector3 target =
+            startHit.position + movement;
 
         NavMeshHit edgeHit;
 
@@ -184,7 +217,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Sinira carparsa sinir boyunca kaymayi dene
         Vector3 normal = edgeHit.normal;
         normal.y = 0f;
 
@@ -194,19 +226,29 @@ public class PlayerController : MonoBehaviour
         normal.Normalize();
 
         Vector3 slideMovement =
-            Vector3.ProjectOnPlane(movement, normal);
+            Vector3.ProjectOnPlane(
+                movement,
+                normal
+            );
 
         slideMovement.y = 0f;
 
-        if (slideMovement.sqrMagnitude > 0.000001f)
+        if (slideMovement.sqrMagnitude >
+            0.000001f)
         {
-            TryMove(slideMovement, startHit.position);
+            TryMove(
+                slideMovement,
+                startHit.position
+            );
         }
     }
 
-    private void TryMove(Vector3 movement, Vector3 navStart)
+    private void TryMove(
+        Vector3 movement,
+        Vector3 navStart)
     {
-        Vector3 target = navStart + movement;
+        Vector3 target =
+            navStart + movement;
 
         NavMeshHit targetHit;
 
@@ -219,14 +261,17 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Hedef NavMesh'in yakininda olmali
-        Vector3 offset = targetHit.position - target;
+        Vector3 offset =
+            targetHit.position - target;
+
         offset.y = 0f;
 
-        if (offset.magnitude > maxHorizontalOffset)
+        if (offset.magnitude >
+            maxHorizontalOffset)
+        {
             return;
+        }
 
-        // Arada NavMesh siniri var mi?
         NavMeshHit pathHit;
 
         if (NavMesh.Raycast(
@@ -238,7 +283,6 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        // Fiziksel collider carpisma kontrolu korunur
         controller.Move(movement);
     }
 
