@@ -1,6 +1,9 @@
 
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using TMPro;
 
 public class CameraFollow : MonoBehaviour
 {
@@ -23,8 +26,21 @@ public class CameraFollow : MonoBehaviour
     [SerializeField] private float collisionRadius = 0.25f;
     [SerializeField] private float orbitStep = 15f;
 
+    [Header("Muhafiz Diyalog Kamera Kontrolu")]
+    [SerializeField] private bool dialogueActive = false;
+
+    private bool cameraMovementEnabled = true;
+    private bool movementReleased = false;
+
     private Transform playerTarget;
     private bool watchingCat = false;
+
+    // TAB tusuna basildiginda diger
+    // scriptlere bildirim gonderir.
+    public event Action OnReturnToMovementRequested;
+
+    public bool IsDialogueActive => dialogueActive;
+    public bool IsMovementReleased => movementReleased;
 
     private readonly RaycastHit[] hits = new RaycastHit[64];
     private readonly Collider[] overlaps = new Collider[32];
@@ -32,10 +48,51 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         playerTarget = target;
+        cameraMovementEnabled = !dialogueActive;
+    }
+
+    void Update()
+    {
+        if (!dialogueActive || Keyboard.current == null)
+            return;
+
+        // TAB: Kamera takibini tekrar ac.
+        // Karakter hareketinin acilmasi icin
+        // DialogueUI sistemine bildirim gonder.
+        if (Keyboard.current.f6Key.wasPressedThisFrame)
+        {
+            if (!movementReleased)
+            {
+                movementReleased = true;
+                cameraMovementEnabled = true;
+
+                OnReturnToMovementRequested?.Invoke();
+
+                Debug.Log(
+                    "TAB: Kamera takibi acildi, hareket talebi gonderildi."
+                );
+            }
+
+            return;
+        }
+
+        // K: Kamera takibini ac veya kapat.
+        // Konusma ekranini kapatmaz.
+        // Mesaj yazarken calismaz.
+        if (!movementReleased &&
+            Keyboard.current.kKey.wasPressedThisFrame &&
+            !IsTypingMessage())
+        {
+            cameraMovementEnabled = !cameraMovementEnabled;
+        }
     }
 
     void LateUpdate()
     {
+        // Kamera sabitse konumunu ve acisini degistirme.
+        if (!cameraMovementEnabled)
+            return;
+
         if (target == null)
             return;
 
@@ -59,8 +116,9 @@ public class CameraFollow : MonoBehaviour
         Vector3 lookPosition = target.position +
             Vector3.up * (watchingCat ? 0.7f : 1.5f);
 
-        // Sabit mesafede guvenli kamera konumu ara
+        // Sabit mesafede guvenli kamera konumu ara.
         bool found;
+
         Vector3 safePosition = FindSafePosition(
             lookPosition,
             worldOffset,
@@ -83,7 +141,7 @@ public class CameraFollow : MonoBehaviour
                 currentOffset = desiredOffset;
 
             // Kameranin uzakligini koruyarak
-            // acisini yumusak degistir
+            // acisini yumusak degistir.
             Vector3 smoothOffset = Vector3.Slerp(
                 currentOffset.normalized,
                 desiredOffset.normalized,
@@ -94,14 +152,15 @@ public class CameraFollow : MonoBehaviour
                 target.position + smoothOffset;
 
             // Ara konum engelin icindeyse
-            // dogrudan guvenli konuma gec
+            // dogrudan guvenli konuma gec.
             transform.position =
                 IsSafe(lookPosition, smoothPosition)
                 ? smoothPosition
                 : safePosition;
         }
+
         // Guvenli aci yoksa kamera mevcut
-        // konumunda kalir, oyuncuya yaklasmaz
+        // konumunda kalir.
 
         Vector3 direction =
             lookPosition - transform.position;
@@ -119,6 +178,44 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
+    // Muhafizla konusma baslayinca veya
+    // bitince DialogueUI tarafindan cagrilir.
+    public void SetDialogueActive(bool active)
+    {
+        dialogueActive = active;
+
+        if (active)
+        {
+            // Konusma basladi.
+            cameraMovementEnabled = false;
+            movementReleased = false;
+        }
+        else
+        {
+            // Konusma bitti.
+            cameraMovementEnabled = true;
+            movementReleased = false;
+        }
+    }
+
+    // Mesaj yazarken K tusunu yok say.
+    private bool IsTypingMessage()
+    {
+        if (EventSystem.current == null)
+            return false;
+
+        GameObject selected =
+            EventSystem.current.currentSelectedGameObject;
+
+        if (selected == null)
+            return false;
+
+        TMP_InputField inputField =
+            selected.GetComponentInParent<TMP_InputField>();
+
+        return inputField != null && inputField.isFocused;
+    }
+
     private Vector3 FindSafePosition(
         Vector3 lookPosition,
         Vector3 worldOffset,
@@ -134,7 +231,7 @@ public class CameraFollow : MonoBehaviour
 
         float step = Mathf.Max(5f, orbitStep);
 
-        // Oyuncuya yaklasmadan saga veya sola don
+        // Oyuncuya yaklasmadan saga veya sola don.
         for (float angle = step; angle <= 180f; angle += step)
         {
             Vector3 rightOffset =
@@ -170,7 +267,7 @@ public class CameraFollow : MonoBehaviour
 
     private bool IsSafe(Vector3 origin, Vector3 position)
     {
-        // Harita sinirlarini kontrol et
+        // Harita sinirlarini kontrol et.
         if (useCameraLimits && !watchingCat)
         {
             if (position.x < xLimits.x ||
