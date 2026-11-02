@@ -21,6 +21,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float navMeshSearchDistance = 1.5f;
     [SerializeField] private float maxHorizontalOffset = 0.2f;
 
+    [Header("Diyalog Hareket Kontrolu")]
+    [SerializeField] private bool canMove = true;
+
     private CharacterController controller;
     private Vector2 moveInput;
     private NavMeshQueryFilter navFilter;
@@ -42,7 +45,6 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
 
-        // Normal durustaki kapsul merkezini kaydet
         standingCenter = controller.center;
 
         if (playerSurface == null)
@@ -66,12 +68,27 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Diyalog sirasinda hareket ve donus durur.
+        // Yer cekimi calismaya devam eder.
+        if (!canMove)
+        {
+            moveInput = Vector2.zero;
+
+            ApplyGravity();
+
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetFloat(SpeedHash, 0f);
+            }
+
+            return;
+        }
+
         // EGILME KONTROLU
         bool isCrouching =
             Keyboard.current != null &&
             Keyboard.current.leftCtrlKey.isPressed;
 
-        // Kapsul yuksekligini degistir
         float targetHeight =
             isCrouching ? crouchHeight : normalHeight;
 
@@ -123,22 +140,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // YER CEKIMI
-        if (controller.isGrounded &&
-            verticalVelocity < 0f)
-        {
-            verticalVelocity = -2f;
-        }
-        else
-        {
-            verticalVelocity +=
-                gravity * Time.deltaTime;
-        }
-
-        controller.Move(
-            Vector3.up *
-            verticalVelocity *
-            Time.deltaTime
-        );
+        ApplyGravity();
 
         // ANIMASYON KONTROLU
         if (playerAnimator != null)
@@ -167,6 +169,49 @@ public class PlayerController : MonoBehaviour
                 isCrouching
             );
         }
+    }
+
+    // Yer cekimini ayri metotta tutuyoruz.
+    // Hareket kilitliyken de calisabilir.
+    private void ApplyGravity()
+    {
+        if (controller.isGrounded &&
+            verticalVelocity < 0f)
+        {
+            verticalVelocity = -2f;
+        }
+        else
+        {
+            verticalVelocity +=
+                gravity * Time.deltaTime;
+        }
+
+        controller.Move(
+            Vector3.up *
+            verticalVelocity *
+            Time.deltaTime
+        );
+    }
+
+    // YENI: Diyalog hareket kilidi
+    public void SetMovementEnabled(bool enabled)
+    {
+        canMove = enabled;
+
+        if (!enabled)
+        {
+            moveInput = Vector2.zero;
+
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetFloat(SpeedHash, 0f);
+            }
+        }
+    }
+
+    public bool CanMove()
+    {
+        return canMove;
     }
 
     private void MoveOnNavMesh(Vector3 movement)
@@ -288,6 +333,8 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue value)
     {
-        moveInput = value.Get<Vector2>();
+        moveInput = canMove
+            ? value.Get<Vector2>()
+            : Vector2.zero;
     }
 }

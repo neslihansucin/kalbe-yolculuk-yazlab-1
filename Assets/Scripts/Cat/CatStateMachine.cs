@@ -59,10 +59,6 @@ public class CatStateMachine : MonoBehaviour
 
     public float followAgainDelay = 2.5f;
 
-    [SerializeField]
-    private float wallSearchTimeout = 5f;
-
-    private float wallSearchStartTime;
 
     [Header("Camera")]
     [SerializeField] private CameraFollow cameraFollow;
@@ -104,7 +100,6 @@ public class CatStateMachine : MonoBehaviour
             !missionCompleted)
         {
             currentState = CatState.CrossingObstacle;
-            wallSearchStartTime = Time.time;
 
             // Kamera kediyi takip etmeye baþlasýn
             if (cameraFollow != null)
@@ -115,32 +110,6 @@ public class CatStateMachine : MonoBehaviour
             Debug.Log("Kedi komutu aldý, engeli geçiyor...");
         }
 
-        if (currentState == CatState.CrossingObstacle &&
-            !gapSelected &&
-            Time.time - wallSearchStartTime >= wallSearchTimeout)
-        {
-            Debug.LogWarning(
-                "Kedi 5 saniyede geçit bulamadý. Tekrar denenebilir."
-            );
-
-            if (agent.isOnNavMesh)
-                agent.ResetPath();
-
-            obstacleWall = null;
-
-            gapSelected = false;
-            reachedGapEntrance = false;
-
-            selectedGapEntrance = Vector3.zero;
-            selectedGapExit = Vector3.zero;
-
-            currentState = CatState.FollowingPlayer;
-
-            if (cameraFollow != null)
-                cameraFollow.WatchPlayer();
-
-            return;
-        }
 
         switch (currentState)
         {
@@ -224,6 +193,7 @@ public class CatStateMachine : MonoBehaviour
     }
 
 
+
     void CrossingObstacleState()
     {
         if (obstacleWall == null)
@@ -235,17 +205,19 @@ public class CatStateMachine : MonoBehaviour
                 wallRayCount,
                 out obstacleWall))
             {
-                Debug.Log("Kedi henüz bir duvar algýlayamadý.");
+                Debug.Log("Kedi duvar bulamadi.");
+
+                ReturnToPlayer();
                 return;
             }
 
             Debug.Log(
-                "Kedi duvarý kendi sensörleriyle buldu: "
+                "Kedi duvari kendi sensorleriyle buldu: "
                 + obstacleWall.name
             );
         }
 
-        // Geçit bir kez seçildikten sonra
+        // Gecit bir kez secildikten sonra
         // yeniden tarama yapma
         if (!gapSelected)
         {
@@ -259,20 +231,22 @@ public class CatStateMachine : MonoBehaviour
                 agent.SetDestination(selectedGapEntrance);
 
                 Debug.Log(
-                    "Kedi kendisine en yakýn deliði seçti."
+                    "Kedi kendisine en yakin deligi secti."
                 );
             }
             else
             {
                 Debug.Log(
-                    "Geçerli bir delik bulunamadý."
+                    "Gecerli bir delik bulunamadi."
                 );
+
+                ReturnToPlayer();
             }
 
             return;
         }
 
-        // Önce deliðin giriþine git
+        // Once deligin girisine git
         if (!reachedGapEntrance)
         {
             agent.SetDestination(selectedGapEntrance);
@@ -283,14 +257,14 @@ public class CatStateMachine : MonoBehaviour
                 reachedGapEntrance = true;
 
                 Debug.Log(
-                    "Kedi deliðin giriþine ulaþtý."
+                    "Kedi deligin girisine ulasti."
                 );
             }
 
             return;
         }
 
-        // Sonra ayný deliðin öbür tarafýna geç
+        // Sonra deligin obur tarafina gec
         agent.SetDestination(selectedGapExit);
 
         if (!agent.pathPending &&
@@ -299,7 +273,7 @@ public class CatStateMachine : MonoBehaviour
             currentState = CatState.Searching;
 
             Debug.Log(
-                "Kedi seçtiði delikten geçti, þimdi butonu arýyor..."
+                "Kedi delikten gecti, simdi butonu ariyor..."
             );
         }
     }
@@ -453,5 +427,24 @@ public class CatStateMachine : MonoBehaviour
                 "Kedi tekrar oyuncuyu takip ediyor."
             );
         }
+    }
+
+    private void ReturnToPlayer()
+    {
+        if (agent != null && agent.isOnNavMesh)
+            agent.ResetPath();
+
+        obstacleWall = null;
+
+        gapSelected = false;
+        reachedGapEntrance = false;
+
+        selectedGapEntrance = Vector3.zero;
+        selectedGapExit = Vector3.zero;
+
+        currentState = CatState.FollowingPlayer;
+
+        if (cameraFollow != null)
+            cameraFollow.WatchPlayer();
     }
 }
