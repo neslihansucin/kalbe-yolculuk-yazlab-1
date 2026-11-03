@@ -14,6 +14,7 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private TMP_Text guardResponseText;
     [SerializeField] private GuardController guardController;
     [SerializeField] private GameObject dialoguePanel;
+    [SerializeField] private TMP_Text playerMessageText;
 
     [Header("Oyuncu ve Kamera")]
     [SerializeField] private PlayerController playerController;
@@ -216,6 +217,8 @@ public class DialogueUI : MonoBehaviour
             return;
         }
 
+        playerMessageText.text = "Sen: \n" + message;
+
         isWaitingForResponse = true;
         sendButton.interactable = false;
         playerInput.interactable = false;
@@ -240,10 +243,11 @@ public class DialogueUI : MonoBehaviour
             {
                 guardResponseText.text =
                     "Muhafýz geçerli bir yanýt üretemedi.";
+                guardResponseText.text = "Muhafýz geçerli bir yanýt üretemedi. Lütfen tekrar dene.";
                 return;
             }
 
-            guardResponseText.text = response.reply;
+            guardResponseText.text = "Kalp Muhafýzý: \n" + response.reply;
             playerInput.text = "";
         }
         catch (System.Threading.Tasks.TaskCanceledException)

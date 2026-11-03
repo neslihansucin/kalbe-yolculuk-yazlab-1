@@ -1445,7 +1445,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Kalbin derinliklerinde ilerle.\r\nKedinin yard\u0131m\u0131yla engelleri a\u015F.\r\nK\xFCreyi bul ve muhaf\u0131zla konu\u015F.\r\nKap\u0131y\u0131 a\xE7arak yolculu\u011Fu tamamla."
+  m_text: "Kalbin \xE7ok yoruldu ve mutlu an\u0131lar\u0131n\u0131 unutmaya ba\u015Flad\u0131.\nOnu iyile\u015Ftirmek i\xE7in kalbin derinliklerine yolculuk et.\nKedinin yard\u0131m\u0131yla engelleri a\u015F, kay\u0131p k\xFCreyi bul ve muhaf\u0131zla konu\u015F.\nKalbine g\xFCzel an\u0131lar\u0131n\u0131 hat\u0131rlatarak onu yeniden iyile\u015Ftir."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2100,7 +2100,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "KONTROLLER\r\n\r\nW / S     \u0130leri - Geri\r\nA / D     Sa\u011Fa - Sola D\xF6n\r\nFARE      Karakteri D\xF6nd\xFCr\r\nE         Kediye Komut Ver\r\nCTRL      E\u011Fil\r\nF6        Konu\u015Fmada Hareketi A\xE7"
+  m_text: "KONTROLLER\r\n\r\nW / S     :     \u0130leri - Geri\r\nA / D      :     Sa\u011Fa - Sola D\xF6n\r\nFARE     :     Karakteri D\xF6nd\xFCr\r\nE            :     Kediye Komut Ver, Muhaf\u0131zla Konu\u015Fmaya Ba\u015Fla\r\nCTRL     :     E\u011Fil\r\nF6          :     Konu\u015Fmada Hareketi A\xE7"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
