@@ -920,7 +920,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1, y: 1, z: 0.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &100187992
 MeshRenderer:
@@ -988,8 +988,8 @@ Transform:
   m_GameObject: {fileID: 100187990}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.91, y: -2.5, z: -0.58}
-  m_LocalScale: {x: 2.8, y: 1, z: 2}
+  m_LocalPosition: {x: -2.87, y: -1.97, z: 0.1}
+  m_LocalScale: {x: 2.8, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 346534959}
@@ -5865,7 +5865,7 @@ Transform:
   m_GameObject: {fileID: 1240939609}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.78, y: 1.34, z: -7.23}
+  m_LocalPosition: {x: 2.32, y: 0.33, z: -4.08}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6588,6 +6588,7 @@ GameObject:
   - component: {fileID: 1405116095}
   - component: {fileID: 1405116094}
   - component: {fileID: 1405116098}
+  - component: {fileID: 1405116099}
   m_Layer: 0
   m_Name: HeartFloor
   m_TagString: Untagged
@@ -6721,6 +6722,18 @@ MonoBehaviour:
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 100ce3a9d33401c43a249d3d3ae8d7a9, type: 2}
   m_BuildHeightMesh: 0
+--- !u!114 &1405116099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1405116093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2dc9740bdee56824bb732103510bea0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MainSceneNavMeshInitializer
 --- !u!1 &1410998536
 GameObject:
   m_ObjectHideFlags: 0
@@ -6963,7 +6976,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 1418137323}
   m_Enabled: 1
   m_AgentTypeID: -1372625422
-  m_Radius: 0.2
+  m_Radius: 0.15
   m_Speed: 2.5
   m_Acceleration: 7
   avoidancePriority: 50
@@ -6972,7 +6985,7 @@ NavMeshAgent:
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
-  m_Height: 1
+  m_Height: 0.6
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
@@ -7919,7 +7932,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.3333334
+      value: 1.3
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalScale.z
@@ -7927,15 +7940,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.871
+      value: -2.84
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.8208332
+      value: -0.738
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.115
+      value: 0.109
       objectReference: {fileID: 0}
     - target: {fileID: 1452164764076841176, guid: 471a38e36ddb7a44dabd03b7fbe6dfc2, type: 3}
       propertyPath: m_LocalRotation.w
@@ -9031,6 +9044,7 @@ GameObject:
   - component: {fileID: 1786758576}
   - component: {fileID: 1786758575}
   - component: {fileID: 1786758574}
+  - component: {fileID: 1786758577}
   m_Layer: 0
   m_Name: QuitButton
   m_TagString: Untagged
@@ -9102,9 +9116,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 260895167}
-        m_TargetAssemblyTypeName: EndGameManager, Assembly-CSharp
-        m_MethodName: QuitGame
+      - m_Target: {fileID: 1786758577}
+        m_TargetAssemblyTypeName: GameExit, Assembly-CSharp
+        m_MethodName: OyundanCik
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9152,6 +9166,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1786758572}
   m_CullTransparentMesh: 1
+--- !u!114 &1786758577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1786758572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc7a5cb90a40a347a9cf6af8ff8e54b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameExit
 --- !u!1001 &1802983844
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9328,8 +9354,8 @@ Transform:
   m_GameObject: {fileID: 1824367603}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.13, y: -2.5, z: -0.47}
-  m_LocalScale: {x: 2.8, y: 1, z: 2}
+  m_LocalPosition: {x: -7.19, y: -2.2, z: 0.18}
+  m_LocalScale: {x: 2.8, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 346534959}
@@ -13078,7 +13104,6 @@ SceneRoots:
   - {fileID: 346534959}
   - {fileID: 1016533828}
   - {fileID: 18981098}
-  - {fileID: 522017666}
   - {fileID: 513785983}
   - {fileID: 676923392}
   - {fileID: 1769071406}
@@ -13088,6 +13113,7 @@ SceneRoots:
   - {fileID: 260895166}
   - {fileID: 404839266}
   - {fileID: 1956967111}
+  - {fileID: 522017666}
   - {fileID: 789864738}
   - {fileID: 118545858}
   - {fileID: 99261738}

@@ -480,6 +480,7 @@ GameObject:
   - component: {fileID: 312330439}
   - component: {fileID: 312330438}
   - component: {fileID: 312330437}
+  - component: {fileID: 312330440}
   m_Layer: 5
   m_Name: ExitButton
   m_TagString: Untagged
@@ -550,7 +551,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 312330438}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 312330440}
+        m_TargetAssemblyTypeName: GameExit, Assembly-CSharp
+        m_MethodName: OyundanCik
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &312330438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -589,6 +602,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 312330435}
   m_CullTransparentMesh: 1
+--- !u!114 &312330440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 312330435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddc7a5cb90a40a347a9cf6af8ff8e54b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameExit
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
