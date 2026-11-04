@@ -2125,7 +2125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "KONTROLLER\r\n\r\nW / S     :     \u0130leri - Geri\r\nA / D      :     Sa\u011Fa - Sola D\xF6n\r\nFARE     :     Karakteri D\xF6nd\xFCr\r\nE            :     Kediye Komut Ver, Muhaf\u0131zla Konu\u015Fmaya Ba\u015Fla\r\nCTRL     :     E\u011Fil\r\nF6          :     Konu\u015Fmada Hareketi A\xE7"
+  m_text: "KONTROLLER\r\n\r\nW / S     :     \u0130leri - Geri\r\nA / D      :     Sa\u011Fa - Sola D\xF6n\r\nFARE     :     Karakteri D\xF6nd\xFCr\r\nE            :     Kediye Komut Ver, Muhaf\u0131zla Konu\u015Fmaya Ba\u015Fla\r\nCTRL     :     E\u011Fil\r\nF6          :     Konu\u015Fmada Hareketi A\xE7\nESC       :     Oyun Men\xFCs\xFCn\xFC A\xE7/Kapat"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
