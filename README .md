@@ -126,7 +126,7 @@ Butona basma etkisi CatButtonTrigger içindedir: Cat tag'li obje buton trigger'�
 
 **Şekil 1 — Otonom kedinin FSM durum diyagramı:**
 
-ekran görüntüsü
+![Görsel 1](docs/images/diyagram1.png)
 
 Bu diyagram oyuncuyu takip etme, engeli aşma, butonu arama ve görevi tamamlama durumları ile geçişlerini gösterir.
 
@@ -157,7 +157,7 @@ N --> O[TaskComplete]
 
 Şekil 2 — Otonom kedinin davranış akış diyagramı:
 
-![Kedi_Akış_Diyagrami](media/image2.png)
+![Görsel 2](docs/images/diyagram 2.png)
 
 Diyagram, Raycast ile geçidi belirleme, NavMesh üzerinden geçme, yeni bölgeleri keşfetme ve butonla duvarı açma sürecini gösterir.
 
@@ -450,23 +450,32 @@ Kedinin farklı başlangıç konumlarındaki performansını değerlendirmek ama
 
 **Görsel kanıt alanı:** Oyuncu ile kedinin duvar önünde beklemesi / `E` tuşu logu — ekran görüntüleri ve Console kayıtları
 
-> ss
+![Test Log 1](docs/images/log1.png)
+![Kedi Görsel 1](docs/images/cat1.png)
 
-**Görsel kanıt alanı:** Kedinin duvarı Raycast ile bulması, geçitleri taraması ve en yakın geçidi seçmesi — ekran görüntüleri ve Console kayıtları
+**Görsel kanıt alanı:** Kedinin duvarı Raycast ile bulması, geçitleri taraması ve en yakın geçidi seçmesi — ekran görüntüleri ve Console kayıtları   
 
-> ss
+![Test Log 2](docs/images/log2.png)
+![Test Log 2](docs/images/log2.1.png)
+![Test Log 2](docs/images/log2.2.png)
+![Kedi Görsel 2](docs/images/cat2.png)
 
 **Görsel kanıt alanı:** Kedinin geçidi aşması — ekran görüntüleri ve Console kayıtları
 
-> ss
+![Test Log 3](docs/images/log3.png)
+![Kedi Görsel 3](docs/images/cat3.png)
+
 
 **Görsel kanıt alanı:** NavMesh ile yeni bölgeleri keşfederek butonu araması — ekran görüntüleri ve Console kayıtları
 
-> ss
+![Test Log 4](docs/images/log4.png)
+![Kedi Görsel 4](docs/images/cat4.png)
 
 **Görsel kanıt alanı:** Butonun algılanması, etkinleştirilmesi ve duvarın parçalanması — ekran görüntüleri ve Console kayıtları
 
-> ss
+![Test Log 5](docs/images/log5.png)
+![Test Log 5.1](docs/images/log5.1.png)
+![Kedi Görsel 5](docs/images/cat5.png)
 
 ### 6.2 Oyun Mekanikleri Testleri
 
@@ -482,23 +491,28 @@ Düşman, çukur, küre alma/yerleştirme ve yeniden başlatma mekanizmaları te
 
 **Görsel kanıt alanı:** Test 1 — Düşmana yakalanma — mevcut görüntüler
 
-> ss
+![Düşman Testi 1](docs/images/enemy1.png)
+![Düşman Testi 2](docs/images/enemy2.png)
 
 **Görsel kanıt alanı:** Test 2 — Çukura düşme — mevcut görüntüler
 
-> ss
+![Çukur Testi 1](docs/images/çukur1.png)
+![Çukur Testi 2](docs/images/çukur2.png)
 
 **Görsel kanıt alanı:** Test 4 — Kalp küresini alma — mevcut görüntüler
 
-> ss
+![Görsel küre](docs/images/küre1.png)
+![Görsel küre2](docs/images/küre2.png)
 
 **Görsel kanıt alanı:** Şekil 11 — Kürenin kalbin merkezine yerleştirilmesi — mevcut görüntüler
 
-> ss
+![Kalp Merkezi Logu](docs/images/logcenter.png)
+![Kalbin Merkezi](docs/images/center1.png)
 
 **Görsel kanıt alanı:** Şekil 12 — Görevin tamamlanması ve oyun bitiş ekranı — mevcut görüntüler
 
-> ss
+![Oyun Sonu Logu](docs/images/logend.png)
+![Oyun Bitiş Ekranı](docs/images/end.png)
 
 ### 6.4 LLM Diyalog Testleri
 
