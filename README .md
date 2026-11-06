@@ -516,20 +516,61 @@ Düşman, çukur, küre alma/yerleştirme ve yeniden başlatma mekanizmaları te
 
 ### 6.3 LLM Diyalog Testleri
 
-| # | Senaryo | hasMemoryOrb | intent / action | Kapı açıldı mı | Görsel |
-|---|---------|--------------|-----------------|----------------|--------|
-| 1 | İyi niyetli | true | heal / allow_entry | Evet | <img src="docs/images/kure-iyi-niyet.png" width="400"> <br><img src="docs/images/kure-iyi-niyet-kapı.png" width="400">|
-| 2 | Kötü niyetli | true | harmful / deny | Hayır | <img src="docs/images/kure-kötü-niyet.png" width="400"> |
-| 3 | Alakasız | true | unclear / request_more_info | Hayır | <img src="docs/images/kure-alakasız.png" width="400"> |
-| 4 | Caydırıcı | true | unclear / request_more_info | Hayır | <img src="docs/images/kure-caydırıcı.png" width="400"> |
-| 5 | Alaycı | true | harmful / deny | Hayır | <img src="docs/images/kure-alaycı.png" width="400"> |
-| 6 | İyi niyetli | false | heal / request_more_info | Hayır | <img src="docs/images/kuresiz-iyi-niyet.png" width="400"> |
-| 7 | Kötü niyetli | false | harmful / deny | Hayır | <img src="docs/images/kuresiz-kotu-niyet.png" width="400"> |
-| 8 | Alakasız | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-alakasız.png" width="400"> |
-| 9 | Caydırıcı | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-caydırıcı.png" width="400"> |
-| 10 | Alaycı | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-alaycı.png" width="400"> |
+| # | Senaryo | hasMemoryOrb | intent / action | Kapı açıldı mı |
+|---|---------|--------------|-----------------|----------------|
+| 1 | İyi niyetli | true | heal / allow_entry | Evet |
+| 2 | Kötü niyetli | true | harmful / deny | Hayır |
+| 3 | Alakasız | true | unclear / request_more_info | Hayır |
+| 4 | Caydırıcı | true | unclear / request_more_info | Hayır |
+| 5 | Alaycı | true | harmful / deny | Hayır |
+| 6 | İyi niyetli | false | heal / request_more_info | Hayır |
+| 7 | Kötü niyetli | false | harmful / deny | Hayır |
+| 8 | Alakasız | false | unclear / request_more_info | Hayır |
+| 9 | Caydırıcı | false | unclear / request_more_info | Hayır |
+| 10 | Alaycı | false | unclear / request_more_info | Hayır |
 
 > **Not:** Intent sınıflandırmasını model yaptığı için, alaycı gibi belirsiz tonlu mesajlar aynı senaryoda farklı intent'e (harmful / unclear) dönüşebilir. Action ise intent ve `hasMemoryOrb` değerine göre kodda doğrulanır (bkz. 3.4), bu yüzden kapının açılıp açılmaması etkilenmez.
+
+**Test 1 — İyi niyetli, küre var**
+
+<img src="docs/images/kure-iyi-niyet.png" width="900">
+<img src="docs/images/kure-iyi-niyet-kapı.png" width="900">
+
+**Test 2 — Kötü niyetli, küre var**
+
+<img src="docs/images/kure-kötü-niyet.png" width="900">
+
+**Test 3 — Alakasız, küre var**
+
+<img src="docs/images/kure-alakasız.png" width="900">
+
+**Test 4 — Caydırıcı, küre var**
+
+<img src="docs/images/kure-caydırıcı.png" width="900">
+
+**Test 5 — Alaycı, küre var**
+
+<img src="docs/images/kure-alaycı.png" width="900">
+
+**Test 6 — İyi niyetli, küre yok**
+
+<img src="docs/images/kuresiz-iyi-niyet.png" width="900">
+
+**Test 7 — Kötü niyetli, küre yok**
+
+<img src="docs/images/kuresiz-kotu-niyet.png" width="900">
+
+**Test 8 — Alakasız, küre yok**
+
+<img src="docs/images/kuresiz-alakasız.png" width="900">
+
+**Test 9 — Caydırıcı, küre yok**
+
+<img src="docs/images/kuresiz-caydırıcı.png" width="900">
+
+**Test 10 — Alaycı, küre yok**
+
+<img src="docs/images/kuresiz-alaycı.png" width="900">
 
 ## 7. Sonuç ve Tartışma
 
