@@ -89,7 +89,7 @@ M --> N[Işıklar yanar, 2 sn sonra oyun sonu paneli]
 
 ### 1.5 Ana menü ekran görüntüsü
 
-> ana ekran
+![](docs/images/ana-ekran.png)
 
 ## 2. Otonom AI Kahraman (Kedi)
 
@@ -157,7 +157,7 @@ N --> O[TaskComplete]
 
 Şekil 2 — Otonom kedinin davranış akış diyagramı:
 
-![Görsel 2](docs/images/diyagram 2.png)
+![Görsel 2](docs/images/diyagram2.png)
 
 Diyagram, Raycast ile geçidi belirleme, NavMesh üzerinden geçme, yeni bölgeleri keşfetme ve butonla duvarı açma sürecini gösterir.
 
@@ -226,7 +226,7 @@ OYUNCU MESAJI:
 <oyuncunun yazdığı metin>
 ```
 
-Muhafızın kişiliği sadece reply üslubunu etkiler. Kapının açılıp açılmayacağı (action) yukarıdaki tabloya bağlıdır ve ayrıca kodda doğrulanır (bkz. 3.4).
+Muhafızın kişiliği sadece reply üslubunu etkiler. Kapının açılıp açılmayacağı (action) ayrıca kodda doğrulanır (bkz. 3.4).
 
 ### 3.3 Yapılandırılmış Çıktı Şeması
 
@@ -313,7 +313,7 @@ end
 
 ### 3.7 Muhafız diyalog ekranı
 
-ekran görüntüsü
+![](docs/images/e-ile-muhafız-sohbetini-acma.png)
 
 ## 4. Sistem Mimarisi ve OOP Tasarımı
 
@@ -409,9 +409,9 @@ Aşağıdaki tabloda iki kaynakta anlatılan prensipler, tekrara düşmeden ayn�
 | Zaman aşımı (15 sn)                 | TaskCanceledException yakalanır                                                                | "Muhafızın yanıt vermesi çok uzun sürdü. Lütfen tekrar dene." |
 | Başarısız HTTP durumu               | OllamaClient durum kodu ve cevapla birlikte HttpRequestException fırlatır, genel catch yakalar | "Muhafıza şu anda ulaşılamıyor. Lütfen tekrar dene."          |
 | Boş cevap                           | GuardController null döndürür                                                                  | "Muhafız geçerli bir yanıt üretemedi. Lütfen tekrar dene."    |
-| Bozuk / ayrıştırılamayan JSON       | JsonUtility istisnası yakalanır, ham cevap loglanır, null döner                                | Aynı mesaj                                                    |
-| Tutarsız cevap (validator reddi)    | null döner                                                                                     | Aynı mesaj                                                    |
-| Bilinmeyen intent / action          | Parser false döner, null döner                                                                 | Aynı mesaj                                                    |
+| Bozuk / ayrıştırılamayan JSON       | JsonUtility istisnası yakalanır, ham cevap loglanır, null döner                                | "Muhafız geçerli bir yanıt üretemedi. Lütfen tekrar dene."    |
+| Tutarsız cevap (validator reddi)    | null döner                                                                                     | "Muhafız geçerli bir yanıt üretemedi. Lütfen tekrar dene."    |
+| Bilinmeyen intent / action          | Parser false döner, null döner                                                                 | "Muhafız geçerli bir yanıt üretemedi. Lütfen tekrar dene."    |
 | Boş oyuncu mesajı                   | Gönderilmez                                                                                    | "Lütfen bir mesaj yaz"                                        |
 
 ```mermaid
@@ -440,7 +440,7 @@ Test sürecinde kediye E tuşuyla komut verilmiş, ardından kedinin Raycast sen
 
 Kedinin farklı başlangıç konumlarındaki performansını değerlendirmek amacıyla sol, orta ve sağ olmak üzere üç farklı konumda beşer deneme yapılmıştır.
 
-| **Başlangıç konumu** | **Deneme sayısı** | **Başarı oranı** | **Ortalama süre (Word'deki değer)** |
+| **Başlangıç konumu** | **Deneme sayısı** | **Başarı oranı** | **Ortalama süre** |
 | -------------------- | ----------------- | ---------------- | ----------------------------------- |
 | Sol                  | 5                 | %100             | 6                                   |
 | Orta                 | 5                 | %100             | 5                                   |
@@ -481,7 +481,7 @@ Kedinin farklı başlangıç konumlarındaki performansını değerlendirmek ama
 
 Düşman, çukur, küre alma/yerleştirme ve yeniden başlatma mekanizmaları test edilmiştir.
 
-| **Test senaryosu**     | **Beklenen sonuç**              | **Word'de bildirilen test sonucu** |
+| **Test senaryosu**     | **Beklenen sonuç**              | **Test sonucu** |
 | ---------------------- | ------------------------------- | ---------------------------------- |
 | Düşmana temas          | Oyuncu ve kedi başlangıca döner | Olumlu                             |
 | Çukura düşme           | Oyuncu ve kedi başlangıca döner | Olumlu                             |
@@ -514,22 +514,22 @@ Düşman, çukur, küre alma/yerleştirme ve yeniden başlatma mekanizmaları te
 ![Oyun Sonu Logu](docs/images/logend.png)
 ![Oyun Bitiş Ekranı](docs/images/end.png)
 
-### 6.4 LLM Diyalog Testleri
+### 6.3 LLM Diyalog Testleri
 
-| **\#** | **Senaryo**  | **hasMemoryOrb** | **Oyuncu mesajı** | **Model cevabı (reply)** | **intent / action** | **Kapı açıldı mı** |
-| ------ | ------------ | ---------------- | ----------------- | ------------------------ | ------------------- | ------------------ |
-| 1      | İyi niyetli  | true             |                   |                          |                     |                    |
-| 2      | Kötü niyetli | true             |                   |                          |                     |                    |
-| 3      | Alakasız     | true             |                   |                          |                     |                    |
-| 4      | Caydırıcı    | true             |                   |                          |                     |                    |
-| 5      | Alaycı       | true             |                   |                          |                     |                    |
-| 6      | İyi niyetli  | false            |                   |                          |                     |                    |
-| 7      | Kötü niyetli | false            |                   |                          |                     |                    |
-| 8      | Alakasız     | false            |                   |                          |                     |                    |
-| 9      | Caydırıcı    | false            |                   |                          |                     |                    |
-| 10     | Alaycı       | false            |                   |                          |                     |                    |
+| # | Senaryo | hasMemoryOrb | intent / action | Kapı açıldı mı | Görsel |
+|---|---------|--------------|-----------------|----------------|--------|
+| 1 | İyi niyetli | true | heal / allow_entry | Evet | <img src="docs/images/kure-iyi-niyet.png" width="400"> <br><img src="docs/images/kure-iyi-niyet-kapı.png" width="400">|
+| 2 | Kötü niyetli | true | harmful / deny | Hayır | <img src="docs/images/kure-kötü-niyet.png" width="400"> |
+| 3 | Alakasız | true | unclear / request_more_info | Hayır | <img src="docs/images/kure-alakasız.png" width="400"> |
+| 4 | Caydırıcı | true | unclear / request_more_info | Hayır | <img src="docs/images/kure-caydırıcı.png" width="400"> |
+| 5 | Alaycı | true | harmful / deny | Hayır | <img src="docs/images/kure-alaycı.png" width="400"> |
+| 6 | İyi niyetli | false | heal / request_more_info | Hayır | <img src="docs/images/kuresiz-iyi-niyet.png" width="400"> |
+| 7 | Kötü niyetli | false | harmful / deny | Hayır | <img src="docs/images/kuresiz-kotu-niyet.png" width="400"> |
+| 8 | Alakasız | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-alakasız.png" width="400"> |
+| 9 | Caydırıcı | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-caydırıcı.png" width="400"> |
+| 10 | Alaycı | false | unclear / request_more_info | Hayır | <img src="docs/images/kuresiz-alaycı.png" width="400"> |
 
-> görsel ekle
+> **Not:** Intent sınıflandırmasını model yaptığı için, alaycı gibi belirsiz tonlu mesajlar aynı senaryoda farklı intent'e (harmful / unclear) dönüşebilir. Action ise intent ve `hasMemoryOrb` değerine göre kodda doğrulanır (bkz. 3.4), bu yüzden kapının açılıp açılmaması etkilenmez.
 
 ## 7. Sonuç ve Tartışma
 
@@ -543,9 +543,9 @@ Bu projede Unity/C# üzerinde **NavMesh**, **Raycast**, **Sonlu Durum Makinesi (
 
 - Sunucu hatası, zaman aşımı ve bozuk cevap durumlarında oyun çalışmaya devam eder.
 
-- üç başlangıç konumunun testlerinde sırasıyla %100, %100 ve %80 başarı oranı raporlanmıştır.
+- 3 başlangıç konumunun testlerinde sırasıyla %100, %100 ve %80 başarı oranı raporlanmıştır.
 
-- beş oyun mekaniği testinin tamamı "olumlu" olarak kaydedilmiştir.
+- 5 oyun mekaniği testinin tamamı "olumlu" olarak kaydedilmiştir.
 
 
 ### Sınırlılıklar
@@ -610,5 +610,9 @@ Bu projede Unity/C# üzerinde **NavMesh**, **Raycast**, **Sonlu Durum Makinesi (
 
 - **Sketchfab — Sandstone Dome House:** Çevre modeli. <https://sketchfab.com/3d-models/sandstone-dome-house-0d5837a72ea54818903bed7ce50f42ef>
 
- - **Sketchfab —Rigged Female Character: Leather Jacket & Boots:** Oyuncu (Player) için kullanılan kadın karakter modeli. [<https://sketchfab.com/3d-models/sandstone-dome-house-0d5837a72ea54818903bed7ce50f42ef>](https://sketchfab.com/3d-models/rigged-female-character-leather-jacket-boots-05c240d89fb34089ad6491ba9499ad0c?)
+- **Sketchfab —Rigged Female Character: Leather Jacket & Boots:** Oyuncu (Player) için kullanılan kadın karakter modeli. [<https://sketchfab.com/3d-models/sandstone-dome-house-0d5837a72ea54818903bed7ce50f42ef>](https://sketchfab.com/3d-models/rigged-female-character-leather-jacket-boots-05c240d89fb34089ad6491ba9499ad0c?)
+   
+- **Sketchfab — Pale Knight Animated (mara3m):** Kalp Muhafızı modeli. <https://skfb.ly/pBuOy> · Lisans: [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/)
+
+- **Sketchfab — Medieval City Gate (Daan van Leeuwen):** Kalp Muhafızının koruduğu kapı modeli. <https://skfb.ly/6RoHp> · Lisans: [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/)
 
