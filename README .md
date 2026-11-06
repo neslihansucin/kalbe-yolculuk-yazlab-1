@@ -463,9 +463,9 @@ Kedinin farklı başlangıç konumlarındaki performansını değerlendirmek ama
 
 | **Başlangıç konumu** | **Deneme sayısı** | **Başarı oranı** | **Ortalama süre** |
 | -------------------- | ----------------- | ---------------- | ----------------------------------- |
-| Sol                  | 5                 | %100             | 6                                   |
-| Orta                 | 5                 | %100             | 5                                   |
-| Sağ                  | 5                 | %80              | 7                                   |
+| Sol                  | 5                 | %100             | 6 s                                  |
+| Orta                 | 5                 | %100             | 5 s                                  |
+| Sağ                  | 5                 | %80              | 7 s                                  |
 
 #### 6.1.1 Kedinin davranışına ait kanıtlar
 
