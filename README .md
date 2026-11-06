@@ -72,20 +72,41 @@ M --> N[Işıklar yanar, 2 sn sonra oyun sonu paneli]
 
 ### 1.4 Kurulum ve Çalıştırma
 
-1.  Unity 6 (6000.6.3f1) ile projeyi açın.
+#### Yerel LLM hazırlığı
 
-2.  [Ollama](https://ollama.com/) kurun, modeli indirin ve sunucuyu çalıştırın:
+Kalp Muhafızı ile konuşabilmek için [Ollama](https://ollama.com/) kurulu ve çalışıyor olmalıdır.
 
-    ```bash
-    ollama pull gemma3:4b
-    ollama serve
-    ```
+Modeli indirin:
 
-    Oyun, modele `http://localhost:11434/api/generate` adresinden bağlanır.
+```bash
+ollama pull gemma3:4b
+```
 
-3.  `MainMenu` sahnesinden başlayın.
+Ollama masaüstü uygulaması açıksa sunucu zaten arka planda çalışır. Çalışmıyorsa (veya komut satırından kullanıyorsanız) sunucuyu başlatın:
 
-4.  kalbe-yolculuk-yazlab-1.exe
+```bash
+ollama serve
+```
+
+Oyun, modele `http://localhost:11434/api/generate` adresinden bağlanır.
+
+#### Hazır Windows sürümünü çalıştırma
+
+[Kalbe Yolculuk — Windows sürümünü indir](https://github.com/neslihansucin/kalbe-yolculuk-yazlab-1/releases/download/v1.0.0/KalbeYolculuk-Windows.zip)
+
+1. Yukarıdaki bağlantıdan ZIP dosyasını indirin.
+2. ZIP dosyasının tamamını bir klasöre çıkartın.
+3. Çıkartılan klasördeki `kalbe-yolculuk-yazlab-1.exe` dosyasını çalıştırın.
+
+> Muhafızla ilk konuşmada modelin belleğe yüklenmesi birkaç saniye sürebilir. Yanıt gelmezse biraz bekleyip mesajı tekrar gönderin.
+
+Hazır sürümü oynamak için Unity kurulumu gerekmez.
+
+#### Unity üzerinden çalıştırma
+
+1. Projenin kaynak dosyalarını indirin.
+2. Projeyi Unity 6 (6000.6.3f1) ile açın.
+3. `MainMenu` sahnesini açıp Play düğmesine basın.
 
 ### 1.5 Ana menü ekran görüntüsü
 
@@ -651,7 +672,7 @@ Bu projede Unity/C# üzerinde **NavMesh**, **Raycast**, **Sonlu Durum Makinesi (
 
 - **Sketchfab — Sandstone Dome House:** Çevre modeli. <https://sketchfab.com/3d-models/sandstone-dome-house-0d5837a72ea54818903bed7ce50f42ef>
 
-- **Sketchfab —Rigged Female Character: Leather Jacket & Boots:** Oyuncu (Player) için kullanılan kadın karakter modeli. [<https://sketchfab.com/3d-models/sandstone-dome-house-0d5837a72ea54818903bed7ce50f42ef>](https://sketchfab.com/3d-models/rigged-female-character-leather-jacket-boots-05c240d89fb34089ad6491ba9499ad0c?)
+- **Sketchfab —Rigged Female Character: Leather Jacket & Boots:** Oyuncu (Player) için kullanılan kadın karakter modeli. <https://sketchfab.com/3d-models/rigged-female-character-leather-jacket-boots-05c240d89fb34089ad6491ba9499ad0c?>
    
 - **Sketchfab — Pale Knight Animated (mara3m):** Kalp Muhafızı modeli. <https://skfb.ly/pBuOy> · Lisans: [CC BY 4.0](http://creativecommons.org/licenses/by/4.0/)
 
