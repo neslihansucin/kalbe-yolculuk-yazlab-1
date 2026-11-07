@@ -106,7 +106,7 @@ Hazır sürümü oynamak için Unity kurulumu gerekmez.
 
 1. Projenin kaynak dosyalarını indirin.
 2. Projeyi Unity 6 (6000.6.3f1) ile açın.
-3. `MainMenu` sahnesini açıp Play düğmesine basın.
+3. `SampleScene` sahnesini açıp Play düğmesine basın.
 
 ### 1.5 Ana menü ekran görüntüsü
 
